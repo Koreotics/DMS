@@ -1,4 +1,4 @@
-package aut.pokimin_battlearena;
+package aut.pokimin_battlearena.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,16 +10,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import aut.pokimin_battlearena.dummy.DummyContent;
-import aut.pokimin_battlearena.dummy.DummyContent.DummyItem;
-
-import java.util.List;
+import aut.pokimin_battlearena.R;
+import aut.pokimin_battlearena.utils.UsersRecyclerViewAdapter;
+import aut.pokimin_battlearena.utils.DummyContent;
+import aut.pokimin_battlearena.utils.DummyContent.DummyItem;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
+ * @author Tristan Borja (1322097)
+ * @author Dominic Yuen  (1324837)
+ * @author Gierdino Julian Santoso (15894898)
  */
 public class LobbyFragment extends Fragment {
 
