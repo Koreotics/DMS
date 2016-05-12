@@ -1,4 +1,4 @@
-package aut.pokimin_battlearena;
+package aut.pokimin_battlearena.fragments;
 
 import android.content.Context;
 import android.net.Uri;
@@ -8,14 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import aut.pokimin_battlearena.R;
+
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link MinionFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link MinionFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * @author Tristan Borja (1322097)
+ * @author Dominic Yuen  (1324837)
+ * @author Gierdino Julian Santoso (15894898)
  */
 public class MinionFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match

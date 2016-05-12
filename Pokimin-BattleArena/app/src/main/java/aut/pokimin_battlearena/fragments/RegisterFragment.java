@@ -1,4 +1,4 @@
-package aut.pokimin_battlearena;
+package aut.pokimin_battlearena.fragments;
 
 import android.content.Context;
 import android.net.Uri;
@@ -8,16 +8,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import aut.pokimin_battlearena.R;
+
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link BattleFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link BattleFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * @author Tristan Borja (1322097)
+ * @author Dominic Yuen  (1324837)
+ * @author Gierdino Julian Santoso (15894898)
  */
-public class BattleFragment extends Fragment {
+public class RegisterFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -29,7 +28,7 @@ public class BattleFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public BattleFragment() {
+    public RegisterFragment() {
         // Required empty public constructor
     }
 
@@ -39,11 +38,11 @@ public class BattleFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment BattleFragment.
+     * @return A new instance of fragment RegisterFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static BattleFragment newInstance(String param1, String param2) {
-        BattleFragment fragment = new BattleFragment();
+    public static RegisterFragment newInstance(String param1, String param2) {
+        RegisterFragment fragment = new RegisterFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -64,7 +63,7 @@ public class BattleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_battle, container, false);
+        return inflater.inflate(R.layout.fragment_register, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event
