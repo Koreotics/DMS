@@ -15,4 +15,8 @@ public class BattleActivity extends AppCompatActivity {
     private void thisMethod() {
         // HI dom
     }
+    
+    public void testMethod(){}
+
+    }
 }
