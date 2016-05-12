@@ -1,4 +1,4 @@
-package aut.pokimin_battlearena.dummy;
+package aut.pokimin_battlearena.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,10 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Helper class for providing sample content for user interfaces created by
- * Android template wizards.
- * <p/>
- * TODO: Replace all uses of this class before publishing your app.
+ * @author Tristan Borja (1322097)
+ * @author Dominic Yuen  (1324837)
+ * @author Gierdino Julian Santoso (15894898)
  */
 public class DummyContent {
 

@@ -1,4 +1,4 @@
-package aut.pokimin_battlearena;
+package aut.pokimin_battlearena.utils;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,15 +7,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import aut.pokimin_battlearena.ItemFragment.OnListFragmentInteractionListener;
-import aut.pokimin_battlearena.dummy.DummyContent;
-import aut.pokimin_battlearena.dummy.DummyContent.DummyItem;
+import aut.pokimin_battlearena.R;
+import aut.pokimin_battlearena.utils.DummyContent.DummyItem;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
+ * @author Tristan Borja (1322097)
+ * @author Dominic Yuen  (1324837)
+ * @author Gierdino Julian Santoso (15894898)
  */
 public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecyclerViewAdapter.ViewHolder> {
 

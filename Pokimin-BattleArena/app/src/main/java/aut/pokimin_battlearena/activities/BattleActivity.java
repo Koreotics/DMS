@@ -1,8 +1,15 @@
-package aut.pokimin_battlearena;
+package aut.pokimin_battlearena.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import aut.pokimin_battlearena.R;
+
+/**
+ * @author Tristan Borja (1322097)
+ * @author Dominic Yuen  (1324837)
+ * @author Gierdino Julian Santoso (15894898)
+ */
 public class BattleActivity extends AppCompatActivity {
 
     @Override
@@ -11,6 +18,11 @@ public class BattleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_battle);
         //test
     }
+
     public void testMethod(){}
+
+    private void thisMethod() {
+        // DAMN IT DOM
+    }
 
 }
