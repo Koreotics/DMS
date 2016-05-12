@@ -11,4 +11,6 @@ public class BattleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_battle);
         //test
     }
+    public void testMethod(){}
+
 }
