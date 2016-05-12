@@ -12,11 +12,10 @@ public class BattleActivity extends AppCompatActivity {
         //test
     }
 
+    public void testMethod(){}
+
     private void thisMethod() {
         // HI dom
     }
-    
-    public void testMethod(){}
 
-    }
 }
