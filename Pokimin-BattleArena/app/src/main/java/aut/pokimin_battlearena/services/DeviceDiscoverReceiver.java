@@ -5,5 +5,7 @@ package aut.pokimin_battlearena.services;
  * @author Dominic Yuen  (1324837)
  * @author Gierdino Julian Santoso (15894898)
  */
-public class BluetoothController {
+public class DeviceDiscoverReceiver {
+
+
 }
