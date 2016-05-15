@@ -19,7 +19,7 @@ public interface BluetoothNode extends Runnable, Serializable {
     // uuid for the Bluetooth application
     public static final UUID SERVICE_UUID = UUID.fromString("aa7e561f-591f-4767-bf26-e4bff3f0875f");
     // name for the Bluetooth application
-    public static final String SERVICE_NAME = "Bluetooth";
+    public static final String SERVICE_NAME = "Pokimin Battle";
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // METHODS
