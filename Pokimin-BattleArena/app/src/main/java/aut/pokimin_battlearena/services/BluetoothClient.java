@@ -1,7 +1,9 @@
 package aut.pokimin_battlearena.services;
 
 import android.app.Activity;
+
 import android.bluetooth.BluetoothAdapter;
+
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import aut.pokimin_battlearena.activities.BattleActivity;
+
 
 /**
  * @author Tristan Borja (1322097)

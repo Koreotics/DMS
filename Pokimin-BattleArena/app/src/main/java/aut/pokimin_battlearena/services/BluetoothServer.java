@@ -1,6 +1,7 @@
 package aut.pokimin_battlearena.services;
 
 import android.app.Activity;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
@@ -104,4 +105,5 @@ public class BluetoothServer implements BluetoothNode {
     public void registerActivity(Activity activity) {
         this.activity = (BattleActivity) activity;
     }
+
 }

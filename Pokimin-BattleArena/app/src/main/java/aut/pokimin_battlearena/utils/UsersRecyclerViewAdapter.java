@@ -6,8 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import aut.pokimin_battlearena.ItemFragment.OnListFragmentInteractionListener;
+
 import aut.pokimin_battlearena.R;
+import aut.pokimin_battlearena.fragments.LobbyFragment;
 import aut.pokimin_battlearena.utils.DummyContent.DummyItem;
 
 import java.util.List;
@@ -20,17 +21,16 @@ import java.util.List;
 public class UsersRecyclerViewAdapter extends RecyclerView.Adapter<UsersRecyclerViewAdapter.ViewHolder> {
 
     private final List<DummyItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final LobbyFragment.OnListFragmentInteractionListener mListener;
 
-    public UsersRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public UsersRecyclerViewAdapter(List<DummyItem> items, LobbyFragment.OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_item, parent, false);
+        View view =null;
         return new ViewHolder(view);
     }
 
