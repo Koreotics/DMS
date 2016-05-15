@@ -1,12 +1,9 @@
 package aut.pokimin_battlearena.services;
 
 import android.app.Activity;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
+
 import android.bluetooth.BluetoothAdapter;
->>>>>>> origin/Tristan
+
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
@@ -19,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import aut.pokimin_battlearena.activities.BattleActivity;
->>>>>>> 6780e6fbabbdcd590a717d28e4366274e1b9f9fb
+
 
 /**
  * @author Tristan Borja (1322097)
@@ -112,13 +109,10 @@ public class BluetoothClient implements BluetoothNode {
         // send some form of message
     }
 
-<<<<<<< HEAD
-=======
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // UTILITIES
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
->>>>>>> 6780e6fbabbdcd590a717d28e4366274e1b9f9fb
     @Override
     public void forward(String message) {
 
@@ -149,11 +143,6 @@ public class BluetoothClient implements BluetoothNode {
     }
 
     @Override
-<<<<<<< HEAD
-    public void registerActivity(Activity chatActivity) {
-
-    }
-=======
     public void registerActivity(Activity activity) {
         this.activity = (BattleActivity) activity;
     }
@@ -195,5 +184,4 @@ public class BluetoothClient implements BluetoothNode {
         }
     }
 
->>>>>>> 6780e6fbabbdcd590a717d28e4366274e1b9f9fb
 }
