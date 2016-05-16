@@ -1,0 +1,46 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".dialogs.RegisterDialog">
+
+    <TextView
+        android:id="@+id/create_account"
+        android:gravity="center"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+
+        android:text="@string/create_account"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        />
+
+    <EditText
+        android:id="@+id/player_name_input"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/create_account"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+
+        android:hint="@string/player_name_hint"
+    />
+
+    <Button
+        android:id="@+id/register_button"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/player_name_input"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/text_margin"
+
+        android:text="@string/register_button"
+        />
+
+</RelativeLayout>

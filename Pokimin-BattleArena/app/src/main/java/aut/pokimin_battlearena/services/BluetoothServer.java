@@ -74,7 +74,7 @@ public class BluetoothServer implements BluetoothNode {
 
 
             } catch (IOException ex) {
-
+                System.err.println("Cannot create a socket for client: " + ex);
             }
 
         }

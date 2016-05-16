@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.io.Serializable;
+
 import aut.pokimin_battlearena.Objects.Monster;
 import aut.pokimin_battlearena.Objects.Skill;
 
@@ -15,7 +17,7 @@ import aut.pokimin_battlearena.Objects.Skill;
  * @author Dominic Yuen  (1324837)
  * @author Gierdino Julian Santoso (15894898)
  */
-public class DatabaseController extends SQLiteOpenHelper {
+public class DatabaseController extends SQLiteOpenHelper implements Serializable{
 
     public static final String DATABASE_NAME = "Pokimin.db";
 
@@ -260,6 +262,35 @@ public class DatabaseController extends SQLiteOpenHelper {
         db.insert("Player", null, values);
     }
 
+    public boolean isPlayerExist() {
+
+        // access database
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // check if record exists in player table
+        String query = "SELECT * FROM player";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        return cursor.moveToFirst();
+    }
+
+    public String getPlayerName() {
+
+        String name = "";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "SELECT * FROM player";
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            name = cursor.getString(cursor.getColumnIndex("Name"));
+            cursor.close();
+        }
+
+        return name;
+    }
     public void setActiveMonster(String playerName, String monsterName){
         // access database
         SQLiteDatabase db = this.getWritableDatabase();
