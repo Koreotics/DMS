@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.MinionActivity" />
-        <activity android:name=".activities.BattleActivity"></activity>
+        <activity android:name=".activities.BattleActivity" />
+        <activity android:name=".activities.PlayerActivity"></activity>
     </application>
 
 </manifest>

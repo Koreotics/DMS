@@ -1,0 +1,81 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/search_title"
+        android:gravity="center"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/text_margin"
+
+        android:text="Waiting for Challenger..."
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        />
+
+    <TextView
+        android:id="@+id/search_message"
+        android:gravity="center"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/search_title"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/text_margin"
+
+        android:text="Press 'SEARCH' to look for a challenger."
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        />
+
+    <Button
+        android:id="@+id/search_button"
+        android:text="Search"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/search_message"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/text_margin"
+        android:layout_marginRight="@dimen/text_margin"/>
+
+    <Button
+        android:id="@+id/bluetooth_button"
+        android:text="Enable Bluetooth"
+        android:visibility="gone"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/search_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/text_margin"
+        android:layout_marginRight="@dimen/text_margin"/>
+
+    <Button
+        android:id="@+id/server_button"
+        android:text="Become server"
+        android:visibility="gone"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bluetooth_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/text_margin"
+        android:layout_marginRight="@dimen/text_margin"
+        />
+
+    <Button
+        android:id="@+id/cancel_button"
+        android:text="Cancel"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/server_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/text_margin"
+        android:layout_marginRight="@dimen/text_margin"
+        />
+
+</RelativeLayout>
