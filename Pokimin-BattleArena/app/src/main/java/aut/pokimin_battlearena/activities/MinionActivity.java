@@ -1,5 +1,6 @@
 package aut.pokimin_battlearena.activities;
 
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,7 +15,7 @@ import aut.pokimin_battlearena.services.LocationBasedController;
  * @author Dominic Yuen  (1324837)
  * @author Gierdino Julian Santoso (15894898)
  */
-public class MinionActivity extends AppCompatActivity implements OnClickListener {
+public class MinionActivity extends Activity implements OnClickListener {
 
     LocationBasedController locationController;
     DatabaseController database;
