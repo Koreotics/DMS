@@ -13,9 +13,15 @@ import android.content.IntentFilter;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OptionalDataException;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import aut.pokimin_battlearena.Objects.Monster;
+import aut.pokimin_battlearena.Objects.Player;
+import aut.pokimin_battlearena.Objects.Skill;
 import aut.pokimin_battlearena.activities.BattleActivity;
 
 
@@ -25,6 +31,11 @@ import aut.pokimin_battlearena.activities.BattleActivity;
  * @author Gierdino Julian Santoso (15894898)
  */
 public class BluetoothClient implements BluetoothNode {
+
+    // TODO: register discovery receiver
+    // TODO: include actions to the discovery receiver
+    // TODO: wait for a device with a service
+    // TODO: start communicating
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // FIELDS
@@ -40,7 +51,6 @@ public class BluetoothClient implements BluetoothNode {
     private List<String> messages;
     private BattleActivity activity;
     private BroadcastReceiver receiver;
-
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // CONSTRUCTOR
@@ -75,54 +85,6 @@ public class BluetoothClient implements BluetoothNode {
 
         // register receiver and filter to activity
         activity.registerReceiver(receiver, intentFilter);
-
-        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-
-//        try { device.wait(); }
-//        catch (InterruptedException ex) { System.err.println("Connection has been interrupted "
-//                + ex); }
-
-        if(device == null && !stopRequest) {
-            stopRequest = true;
-            return;
-        }
-
-        socket = null;
-        try {
-            socket = device.createRfcommSocketToServiceRecord(BluetoothNode.SERVICE_UUID);
-            socket.connect();
-            adapter.cancelDiscovery();
-        } catch (IOException ex) {
-            System.err.println("Unable to connect socket with device: " + ex);
-            socket = null;
-        }
-
-        if (socket == null) {
-            stopRequest = true;
-            return;
-        }
-
-        // TODO: start a new thread to send messages to device
-
-        // read receiving messages from the socket
-        try {
-            ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
-
-            while (!stopRequest) {
-                String response = (String) input.readObject();
-                activity.setResponseMessage(response);
-            }
-        }
-
-        catch (IOException e) {}
-        catch (ClassNotFoundException e) {}
-
-        try {  socket.close(); }
-        catch (IOException e) {}
-
-        activity.transactFragment(BattleActivity.RESULT_FRAGMENT);
-
-        socket = null;
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -162,11 +124,128 @@ public class BluetoothClient implements BluetoothNode {
         this.activity = (BattleActivity) activity;
     }
 
-    public class DeviceDiscoverReceiver extends BroadcastReceiver {
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // UTILITY
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        // UTILITY
-        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // CONNECTION RELATED ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    private void connectToServer() {
+
+        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+        socket = null;
+
+        // in case device has not been registered
+        if(device == null && !stopRequest) {
+            stopRequest = true;
+            return;
+        }
+
+        // creating a connection with the device
+        try {
+            socket = device.createRfcommSocketToServiceRecord(BluetoothNode.SERVICE_UUID);
+            socket.connect();
+            adapter.cancelDiscovery();
+        } catch (IOException ex) {
+            System.err.println("Unable to connect socket with device: " + ex);
+            socket = null;
+        }
+
+        // stop thread when socket connection fails
+        if (socket == null) {
+            stopRequest = true;
+            return;
+        }
+    }
+
+    private void startCommunication() {
+
+        // start message receiver in new thread
+        MessageReceiver messageReceiver = new MessageReceiver(socket);
+        Thread receiverThread = new Thread(messageReceiver);
+        receiverThread.start();
+
+    }
+
+    // SENDING MESSAGES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public void sendPlayerInfo() {
+        // TODO: send player information to server
+    }
+
+    public void sendActiveSkill(Skill skill) {
+        // TODO: send activated skill to server
+    }
+
+    public void sendMessage(String message) {
+        // TODO: send a message to server for debugging purposes
+    }
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // CLASSES
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public class MessageReceiver implements Runnable {
+
+        // FIELDS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        BluetoothSocket    socket;
+//        ObjectOutputStream output;
+        ObjectInputStream  input;
+
+        // CONSTRUCTOR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        public MessageReceiver(BluetoothSocket socket) {
+            try {
+                this.socket = socket;
+//                this.output = new ObjectOutputStream(socket.getOutputStream());
+                this.input  = new ObjectInputStream(socket.getInputStream());
+            } catch (IOException e) {
+                System.err.println("Unable to extract output stream: " + e);
+            }
+        }
+
+        // RUNNABLE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        @Override
+        public void run() {
+
+            try {
+                while (!stopRequest) {
+                    Object object = input.readObject();
+
+                    if (object instanceof String) {
+                        String response = (String) object;
+                        messages.add(response);
+                        activity.setResponseMessage(response);
+                    } else if (object instanceof Player) {
+                        // TODO: set your opponent's information here
+                        Player player = (Player) object;
+                        activity.setBattleOpponentName(player);
+                    } else if (object instanceof Monster) {
+                        // TODO: set your opponent's minion stats here
+                        Monster monster = (Monster) object;
+                        activity.setBattleOpponentHealth(monster);
+                    }
+                }
+            } catch (OptionalDataException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                if (input  != null) input.close();
+//                if (output != null) output.close();
+                if (socket != null) socket.close();
+            } catch (IOException ex) {
+                System.err.println("Unable to close connection: " + ex);
+            }
+        }
+
+        // UTILITY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    }
+    public class DeviceDiscoverReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -182,6 +261,9 @@ public class BluetoothClient implements BluetoothNode {
                 battle.putExtra("fragmentID", BattleActivity.BATTLE_FRAGMENT);
                 activity.startActivity(battle);
 
+                connectToServer();
+                startCommunication();
+
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
 
                 // activate activity here
@@ -191,8 +273,6 @@ public class BluetoothClient implements BluetoothNode {
                 device.notify();
 
             }
-
         }
     }
-
 }

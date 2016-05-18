@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import java.io.Serializable;
 
+import aut.pokimin_battlearena.Objects.Monster;
+import aut.pokimin_battlearena.Objects.Player;
 import aut.pokimin_battlearena.R;
 import aut.pokimin_battlearena.fragments.BattleFragment;
 import aut.pokimin_battlearena.fragments.ResultFragment;
@@ -141,7 +143,11 @@ public class BattleActivity extends Activity implements Serializable,
         startActivity(intent);
     }
 
-    public void setResponseMessage(String message) { battle.setResponseMessage(message);}
+    public void setResponseMessage(String message)       { battle.setResponseMessage(message);}
+    public void setBattlePlayerName(Player player)       { battle.setPlayerName(player); }
+    public void setBattleOpponentName(Player player)     { battle.setOpponentName(player); }
+    public void setBattlePlayerHealth(Monster monster)   { battle.setPlayerHealth(monster); }
+    public void setBattleOpponentHealth(Monster monster) { battle.setOpponentHealth(monster); }
 
     @Override
     public void onBattleFragmentInteraction() {

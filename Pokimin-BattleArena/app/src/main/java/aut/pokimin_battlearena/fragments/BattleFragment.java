@@ -1,15 +1,22 @@
 package aut.pokimin_battlearena.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
+import aut.pokimin_battlearena.Objects.Monster;
+import aut.pokimin_battlearena.Objects.Player;
 import aut.pokimin_battlearena.R;
+import aut.pokimin_battlearena.activities.BattleActivity;
 import aut.pokimin_battlearena.services.BluetoothNode;
 
 
@@ -27,7 +34,11 @@ public class BattleFragment extends Fragment {
     OnFragmentInteractionListener mListener;
 
     TextView message;
-    BluetoothNode node;
+    TextView opponent;
+    TextView player;
+
+    ProgressBar opponentHealth;
+    ProgressBar playerHealth;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // FRAGMENT
@@ -38,7 +49,12 @@ public class BattleFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_battle, viewGroup, false);
 
-        message = (TextView) view.findViewById(R.id.battle_response_message);
+        message  = (TextView) view.findViewById(R.id.battle_response_message);
+        opponent = (TextView) view.findViewById(R.id.battle_opponent_name);
+        player   = (TextView) view.findViewById(R.id.battle_player_name);
+
+        opponentHealth = (ProgressBar) view.findViewById(R.id.opponent_hp);
+        playerHealth   = (ProgressBar) view.findViewById(R.id.player_hp);
 
         return view;
     }
@@ -65,7 +81,33 @@ public class BattleFragment extends Fragment {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     public void setResponseMessage(String message) { this.message.setText(message); }
+    public void setOpponentName(Player player)     { this.opponent.setText(player.getName()); }
+    public void setPlayerName(Player player)       { this.player.setText(player.getName()); }
+    public void setOpponentHealth(Monster monster) { this.opponentHealth.setProgress(monster.getHealth()); }
+    public void setPlayerHealth(Monster monster)   { this.playerHealth.setProgress(monster.getHealth()); }
 
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // UTILITY
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public void checkHealth() {
+
+        Intent intent = null;
+
+        if (opponentHealth.getProgress() <= 0) {
+            intent = new Intent(getActivity(), BattleActivity.class);
+            intent.putExtra("result", opponent.getText());
+        } else if (playerHealth.getProgress() <= 0) {
+            intent = new Intent(getActivity(), BattleActivity.class);
+            intent.putExtra("result", player.getText());
+        }
+
+        if (intent != null) {
+            intent.putExtra("fragmentID", BattleActivity.RESULT_FRAGMENT);
+            startActivity(intent);
+        }
+
+    }
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // CLASS
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
