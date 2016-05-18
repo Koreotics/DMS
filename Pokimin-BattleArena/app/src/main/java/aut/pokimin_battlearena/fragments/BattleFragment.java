@@ -38,7 +38,7 @@ public class BattleFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_battle, viewGroup, false);
 
-        message = (TextView) view.findViewById(R.id.response_message);
+        message = (TextView) view.findViewById(R.id.battle_response_message);
 
         return view;
     }

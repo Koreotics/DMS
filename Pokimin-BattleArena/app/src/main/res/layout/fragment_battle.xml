@@ -8,17 +8,66 @@
     tools:context=".fragments.BattleFragment">
 
     <TextView
-        android:id="@+id/response_message"
+        android:id="@+id/battle_response_message"
         android:gravity="center"
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/search_title"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="@dimen/text_margin"
 
+        android:layout_below="@+id/your_hp"
         android:text="Response is placed here"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        />
+        android:layout_marginBottom="134dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Opponent"
+        android:id="@+id/battle_opponent_name"
+        android:layout_below="@+id/opponent_hp"
+        android:layout_margin="@dimen/text_margin"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Your Username"
+        android:id="@+id/battle_username"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="@dimen/text_margin"/>
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/your_hp"
+        android:layout_below="@+id/battle_username"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/opponent_hp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <GridView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/move_sets"
+        android:layout_below="@+id/battle_response_message"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
