@@ -189,7 +189,7 @@ public class BluetoothClient implements BluetoothNode {
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
 
                 device.notify();
-                // activate activity here
+
             }
 
         }

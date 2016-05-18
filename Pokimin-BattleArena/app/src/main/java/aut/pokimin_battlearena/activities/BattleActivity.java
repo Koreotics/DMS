@@ -129,8 +129,9 @@ public class BattleActivity extends Activity implements Serializable,
 
         // enables device to be discoverable
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,30);
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,1);
         startActivity(discoverableIntent);
+        search.getSearchButton().setVisibility(View.GONE);
     }
 
     public void transactFragment(int fragmentID) {
@@ -183,6 +184,8 @@ public class BattleActivity extends Activity implements Serializable,
                         break;
                     case BluetoothAdapter.SCAN_MODE_CONNECTABLE :
                         search.setMessage("Challenger not found.");
+                        search.getServerButton().setVisibility(View.VISIBLE);
+                        search.getSearchButton().setVisibility(View.VISIBLE);
                         break;
                     case BluetoothAdapter.SCAN_MODE_NONE :
                         search.setMessage("Bluetooth is not connected or discoverable");

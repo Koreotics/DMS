@@ -18,6 +18,7 @@ import aut.pokimin_battlearena.activities.BattleActivity;
 import aut.pokimin_battlearena.activities.MainActivity;
 import aut.pokimin_battlearena.services.BluetoothClient;
 import aut.pokimin_battlearena.services.BluetoothNode;
+import aut.pokimin_battlearena.services.BluetoothServer;
 
 /**
  * @author Tristan Borja (1322097)
@@ -29,6 +30,12 @@ public class SearchDialog extends DialogFragment implements AdapterView.OnClickL
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // FIELDS
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    BattleActivity activity;
+    Thread clientThread;
+    Thread serverThread;
+    BluetoothNode clientNode;
+    BluetoothNode serverNode;
 
     // text view field
     private TextView message;
@@ -78,7 +85,8 @@ public class SearchDialog extends DialogFragment implements AdapterView.OnClickL
     // ACCESSOR
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    public Button getServerButton()    { return server; }
+    public Button getServerButton() { return server; }
+    public Button getSearchButton() { return search; }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // ON CLICK LISTENER
@@ -86,24 +94,31 @@ public class SearchDialog extends DialogFragment implements AdapterView.OnClickL
 
     @Override
     public void onClick(View view) {
-        if (view == search) {
+        activity = (BattleActivity) getActivity();
 
-            BattleActivity activity = (BattleActivity) getActivity();
+        if (view == search) {
 
             activity.enableDiscoverable();
             activity.configBluetooth();
 
             BluetoothNode client = new BluetoothClient();
             client.registerActivity(activity);
-            Thread thread = new Thread(client);
-            thread.start();
+            clientThread = new Thread(client);
+            clientThread.start();
 
         } else if (view == cancel) {
             Intent intent = new Intent(getActivity(), MainActivity.class);
             startActivity(intent);
         } else if (view == server) {
-            // TODO: allow user to become server
 
+            message.setText("You have become a server. Awaiting challenger...");
+
+            BluetoothNode server = new BluetoothServer();
+            server.registerActivity(activity);
+            serverThread = new Thread(server);
+            serverThread.start();
+
+            if (clientNode != null) { clientNode.stop(); }
         }
     }
 }
