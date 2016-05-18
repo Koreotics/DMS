@@ -19,7 +19,7 @@ public class LocationBasedController implements LocationListener{
     private Context context;
     private Button toggleButton; // toggles whether GPS started/stopped
     private TextView locationTextView;
-    private boolean wantLocationUpdates;
+    public boolean wantLocationUpdates;
     public static final String UPDATES_BUNDLE_KEY
             = "WantsLocationUpdates";
 
@@ -32,12 +32,11 @@ public class LocationBasedController implements LocationListener{
         travelDistance = 0;
     }
 
-    public void setLocationTextView(TextView textview){
-        locationTextView = textview;
-    }
-    public void setToggleButton(Button button){
-        toggleButton = button;
-    }
+    // getters & setters
+    public boolean isWantLocationUpdates(){return wantLocationUpdates;}
+    public float getTravelDistance(){return travelDistance;}
+    public void setLocationTextView(TextView textview){locationTextView = textview;}
+    public void setToggleButton(Button button){toggleButton = button;}
 
     public void toggleLocationUpdate(){
         if(wantLocationUpdates) {
@@ -49,9 +48,6 @@ public class LocationBasedController implements LocationListener{
             startGPS();
         }
     }
-
-    public boolean isWantLocationUpdates(){return wantLocationUpdates;}
-    public float getTravelDistance(){return travelDistance;}
 
     // needs to be called when the activity onStart()
     public void startGPS()

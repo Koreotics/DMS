@@ -70,4 +70,12 @@
         android:layout_toStartOf="@+id/minion_name"
         android:layout_toLeftOf="@+id/minion_name"
         android:layout_above="@+id/minion_train_button" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/train_distance_textview"
+        android:layout_below="@+id/minion_train_button"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
