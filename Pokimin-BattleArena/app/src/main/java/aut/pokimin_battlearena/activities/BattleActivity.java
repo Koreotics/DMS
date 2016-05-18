@@ -26,79 +26,63 @@ import aut.pokimin_battlearena.dialogs.SearchDialog;
  * @author Dominic Yuen  (1324837)
  * @author Gierdino Julian Santoso (15894898)
  */
-public class BattleActivity extends Activity implements Serializable {
+public class BattleActivity extends Activity implements Serializable,
+        BattleFragment.OnFragmentInteractionListener {
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // FIELDS
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public static final int SEARCH_FRAGMENT = 0;
+    public static final int BATTLE_FRAGMENT = 1;
+    public static final int RESULT_FRAGMENT = 2;
 
     SearchDialog search;
+    BattleFragment battle;
+    ResultFragment result;
+
     BroadcastReceiver receiver;
     BluetoothAdapter adapter;
 
+    Button bluetoothButton;
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ACTIVITY
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // set view for activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_battle);
 
         if (savedInstanceState == null) {
 
+            // create instance of the fragments
+            search = new SearchDialog();
+            battle = new BattleFragment();
+            result = new ResultFragment();
+
+            // initialise fragment transactions
             FragmentManager     manager     = this.getFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
 
+            // present the fragments into the screen
             switch (getIntent().getIntExtra("fragmentID", 0)) {
-                case (0): // search
-                    search = new SearchDialog();
-                    search.show(manager, "Search");
-
-                    break;
-                case (1): // battle
-                    BattleFragment battle = new BattleFragment();
-                    transaction.add(R.id.fragment_battle, battle);
-                    transaction.commit();
-                    break;
-                case (2): // result
-                    ResultFragment result = new ResultFragment();
-                    transaction.replace(R.id.battle_fragment, result);
-                    break;
+                case (SEARCH_FRAGMENT): search.show(manager, "Search"); break;
+                case (BATTLE_FRAGMENT): transaction.replace(R.id.battle_fragment, battle); break;
+                case (RESULT_FRAGMENT): transaction.replace(R.id.battle_fragment, result); break;
             }
 
+            // finalise fragment transaction
             transaction.addToBackStack(null);
             transaction.commit();
-        }
 
+        }
 
     }
 
-    public void bluetooth() {
-
-        // check if device supports bluetooth
-        adapter = BluetoothAdapter.getDefaultAdapter();
-
-        if (adapter == null) {
-            search.setMessage("This device does not support bluetooth. Get an upgrade mate");
-        } else {
-            if (receiver == null) {
-                receiver = new BluetoothReceiver();
-            }
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            filter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
-            registerReceiver(receiver, filter);
-
-            if (!adapter.isEnabled()) {
-                search.setMessage("Bluetooth is disabled. Please enable to proceed.");
-                // TODO: enable bluetooth
-                final Button bluetoothButton = search.getBluetoothButton();
-                bluetoothButton.setVisibility(View.VISIBLE);
-                bluetoothButton.setOnClickListener( new AdapterView.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        adapter.enable();
-                        bluetoothButton.setVisibility(View.GONE);
-                    }
-                });
-            } else {
-                search.setMessage("Bluetooth is enabled");
-            }
-        }
-    }
     @Override
     public void onStart() {
         super.onStart();
@@ -110,6 +94,62 @@ public class BattleActivity extends Activity implements Serializable {
         if (receiver != null) { unregisterReceiver(receiver); }
     }
 
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // UTILITY
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public void configBluetooth() {
+
+        adapter = BluetoothAdapter.getDefaultAdapter();
+
+        // check if device supports bluetooth
+        if (adapter == null) {
+            search.setMessage("This device does not support bluetooth. Get an upgrade mate");
+        } else {
+            if (receiver == null) { receiver = new BluetoothReceiver(); }
+
+            // registering receiver
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+            filter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+            registerReceiver(receiver, filter);
+
+            // enable bluetooth
+            if (!adapter.isEnabled()) {
+                search.setMessage("Bluetooth is disabled. Please enable to proceed.");
+
+                Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivity(enableBluetooth);
+
+            } else { search.setMessage("Bluetooth is enabled"); }
+        }
+    }
+
+    public void enableDiscoverable() {
+
+        // enables device to be discoverable
+        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,30);
+        startActivity(discoverableIntent);
+    }
+
+    public void transactFragment(int fragmentID) {
+
+        Intent intent = new Intent(this, BattleActivity.class);
+        intent.putExtra("fragmentID", fragmentID);
+        startActivity(intent);
+    }
+
+    public void setResponseMessage(String message) { battle.setResponseMessage(message);}
+
+    @Override
+    public void onBattleFragmentInteraction() {
+
+    }
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // CLASS
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     public class BluetoothReceiver extends BroadcastReceiver {
 
@@ -139,10 +179,10 @@ public class BattleActivity extends Activity implements Serializable {
                     (BluetoothAdapter.EXTRA_SCAN_MODE, -1);
                 switch (newScanMode) {
                     case BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE:
-                        search.setMessage("Bluetooth is connected and is discoverable");
+                        search.setMessage("Searching for challenger...");
                         break;
                     case BluetoothAdapter.SCAN_MODE_CONNECTABLE :
-                        search.setMessage("Bluetooth is connected");
+                        search.setMessage("Challenger not found.");
                         break;
                     case BluetoothAdapter.SCAN_MODE_NONE :
                         search.setMessage("Bluetooth is not connected or discoverable");

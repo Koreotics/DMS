@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class BluetoothClient implements BluetoothNode {
     private boolean stopRequest;
 
     // bluetooth related fields
-    private List<BluetoothDevice> devices;
+    private BluetoothDevice device;
     private BluetoothSocket socket;
 
     // message related fields
@@ -46,7 +47,7 @@ public class BluetoothClient implements BluetoothNode {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     public BluetoothClient() {
-        devices  = new ArrayList<>();
+        device   = null;
         socket   = null;
         messages = new ArrayList<>();
         activity = null;
@@ -62,7 +63,6 @@ public class BluetoothClient implements BluetoothNode {
     @Override
     public void run() {
 
-        devices.clear();
         messages.clear();
 
         // start device discovery
@@ -71,46 +71,62 @@ public class BluetoothClient implements BluetoothNode {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(BluetoothDevice.ACTION_FOUND);
         intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
 
         // register receiver and filter to activity
+        activity.registerReceiver(receiver, intentFilter);
 
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
 
-        synchronized (devices) {
-            try { devices.wait(); }
-            catch (InterruptedException ex) { System.err.println("Connection has been interrupted "
-                    + ex); }
+//        try { device.wait(); }
+//        catch (InterruptedException ex) { System.err.println("Connection has been interrupted "
+//                + ex); }
+
+        if(device == null && !stopRequest) {
+            stopRequest = true;
+            return;
         }
 
-        // no connected devices
-        if (devices.size() == 0 && !stopRequest) {
-            // notify activity no devices has been found
-        }
-
-        // check if connected device has application
-        for (BluetoothDevice device : devices) {
-            try {
-                // notify activity checking for service from one of the devices
-                socket = device.createRfcommSocketToServiceRecord(BluetoothNode.SERVICE_UUID);
-                socket.connect();
-                adapter.cancelDiscovery();
-                break;
-            } catch (IOException ex) {
-                System.err.println("Cannot find service " + ex);
-            }
+        socket = null;
+        try {
+            socket = device.createRfcommSocketToServiceRecord(BluetoothNode.SERVICE_UUID);
+            socket.connect();
+            adapter.cancelDiscovery();
+        } catch (IOException ex) {
+            System.err.println("Unable to connect socket with device: " + ex);
+            socket = null;
         }
 
         if (socket == null) {
-            // notify activity no client has been found
+            stopRequest = true;
+            return;
         }
 
-        // notify activity a connection has been found
-        // send some form of message
+        // TODO: start a new thread to send messages to device
+
+        // read receiving messages from the socket
+        try {
+            ObjectInputStream input = new ObjectInputStream(socket.getInputStream());
+
+            while (!stopRequest) {
+                String response = (String) input.readObject();
+                activity.setResponseMessage(response);
+            }
+        }
+
+        catch (IOException e) {}
+        catch (ClassNotFoundException e) {}
+
+        try {  socket.close(); }
+        catch (IOException e) {}
+
+        activity.transactFragment(BattleActivity.RESULT_FRAGMENT);
+
+        socket = null;
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // UTILITIES
+    // BLUETOOTH NODE
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     @Override
@@ -129,9 +145,8 @@ public class BluetoothClient implements BluetoothNode {
 
         if (receiver != null) { receiver = null; }
 
-        synchronized (devices) {
-            devices.notifyAll();
-        }
+        device.notify();
+
         synchronized (messages) {
             messages.notifyAll();
         }
@@ -160,13 +175,12 @@ public class BluetoothClient implements BluetoothNode {
             // attempt to find a device
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
 
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                BluetoothDevice bDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                device = bDevice;
 
-                synchronized (devices) {
-                    devices.add(device);
-                }
-
-                // activate activity here
+                Intent battle = new Intent(activity, BattleActivity.class);
+                battle.putExtra("fragmentID", BattleActivity.BATTLE_FRAGMENT);
+                activity.startActivity(battle);
 
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
 
@@ -174,10 +188,7 @@ public class BluetoothClient implements BluetoothNode {
 
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
 
-                synchronized (devices) {
-                    devices.notifyAll();
-                }
-
+                device.notify();
                 // activate activity here
             }
 
