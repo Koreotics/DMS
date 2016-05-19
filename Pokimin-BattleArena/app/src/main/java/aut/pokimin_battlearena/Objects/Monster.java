@@ -3,12 +3,14 @@ package aut.pokimin_battlearena.Objects;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.Serializable;
+
 import aut.pokimin_battlearena.services.DatabaseController;
 
 /**
  * Created by Dom on 13/05/2016.
  */
-public class Monster {
+public class Monster implements Serializable {
 
     public String name = "";
     public String img = "";
