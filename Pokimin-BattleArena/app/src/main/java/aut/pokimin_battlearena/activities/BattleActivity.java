@@ -131,7 +131,7 @@ public class BattleActivity extends Activity implements Serializable,
 
         // enables device to be discoverable
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,1);
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 10);
         startActivity(discoverableIntent);
         search.getSearchButton().setVisibility(View.GONE);
     }

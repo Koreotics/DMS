@@ -108,7 +108,9 @@ public class SearchDialog extends DialogFragment implements AdapterView.OnClickL
 
         } else if (view == cancel) {
             Intent intent = new Intent(getActivity(), MainActivity.class);
-            startActivity(intent);
+
+            startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+
         } else if (view == server) {
 
             message.setText("You have become a server. Awaiting challenger...");
