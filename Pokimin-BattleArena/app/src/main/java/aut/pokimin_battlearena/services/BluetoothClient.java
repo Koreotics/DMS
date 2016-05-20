@@ -105,7 +105,8 @@ public class BluetoothClient implements BluetoothNode {
     public void stop() {
         stopRequest = true;
 
-        if (receiver != null) { receiver = null; }
+        if (receiver != null) {
+            receiver = null; }
 
         device.notify();
 
