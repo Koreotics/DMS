@@ -42,25 +42,13 @@
         android:layout_marginRight="@dimen/text_margin"/>
 
     <Button
-        android:id="@+id/bluetooth_button"
-        android:text="Enable Bluetooth"
-        android:visibility="gone"
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/search_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="@dimen/text_margin"
-        android:layout_marginRight="@dimen/text_margin"/>
-
-    <Button
         android:id="@+id/server_button"
         android:text="Become server"
         android:visibility="gone"
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/bluetooth_button"
+        android:layout_below="@+id/search_button"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="@dimen/text_margin"
         android:layout_marginRight="@dimen/text_margin"

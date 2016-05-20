@@ -12,62 +12,113 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 
+import aut.pokimin_battlearena.Objects.Player;
 import aut.pokimin_battlearena.R;
 import aut.pokimin_battlearena.activities.BattleActivity;
 import aut.pokimin_battlearena.activities.MainActivity;
+import aut.pokimin_battlearena.services.BluetoothClient;
+import aut.pokimin_battlearena.services.BluetoothNode;
+import aut.pokimin_battlearena.services.BluetoothServer;
 
 /**
  * @author Tristan Borja (1322097)
  * @author Dominic Yuen  (1324837)
  * @author Gierdino Julian Santoso (15894898)
  */
-public class SearchDialog extends DialogFragment {
+public class SearchDialog extends DialogFragment implements AdapterView.OnClickListener {
 
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // FIELDS
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    BattleActivity activity;
+    Thread clientThread;
+    Thread serverThread;
+    BluetoothNode clientNode;
+    BluetoothNode serverNode;
+
+    // text view field
     private TextView message;
 
+    // button fields
     private Button search;
-    private Button bluetooth;
     private Button server;
     private Button cancel;
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // DIALOG FRAGMENT
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
+        // building the dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
+        // set the layout of the dialog
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.dialog_search, null);
         builder.setView(view);
 
-        message = (TextView) view.findViewById(R.id.search_message);
+        // retrieving views from layout
+        message   = (TextView) view.findViewById(R.id.search_message);
+        search    = (Button) view.findViewById(R.id.search_button);
+        server    = (Button) view.findViewById(R.id.server_button);
+        cancel    = (Button) view.findViewById(R.id.cancel_button);
 
-        search = (Button) view.findViewById(R.id.search_button);
-        search.setOnClickListener(new AdapterView.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                BattleActivity activity = (BattleActivity) getActivity();
-                activity.bluetooth();
-            }
-        });
+        // setting listeners to buttons
+        search.setOnClickListener(this);
+        server.setOnClickListener(this);
+        cancel.setOnClickListener(this);
 
-        bluetooth = (Button) view.findViewById(R.id.bluetooth_button);
-
-        server = (Button) view.findViewById(R.id.server_button);
-
-        cancel = (Button) view.findViewById(R.id.cancel_button);
-        cancel.setOnClickListener(new AdapterView.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                startActivity(intent);
-            }
-        });
-
+        // create the dialog
         return builder.create();
     }
 
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // MUTATOR
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
     public void setMessage(String message) { this.message.setText(message); }
-    public Button getBluetoothButton() { return bluetooth; }
-    public Button   getSearchButton() { return search; }
-    public Button   getServerButton() { return server; }
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ACCESSOR
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public Button getServerButton() { return server; }
+    public Button getSearchButton() { return search; }
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ON CLICK LISTENER
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    @Override
+    public void onClick(View view) {
+        activity = (BattleActivity) getActivity();
+
+        if (view == search) {
+
+            activity.enableDiscoverable();
+            activity.configBluetooth();
+
+            BluetoothNode client = new BluetoothClient();
+            client.registerActivity(activity);
+            clientThread = new Thread(client);
+            clientThread.start();
+
+        } else if (view == cancel) {
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            startActivity(intent);
+        } else if (view == server) {
+
+            message.setText("You have become a server. Awaiting challenger...");
+
+            BluetoothNode server = new BluetoothServer();
+            server.registerActivity(activity);
+            serverThread = new Thread(server);
+            serverThread.start();
+
+            if (clientNode != null) { clientNode.stop(); }
+        }
+    }
 }
