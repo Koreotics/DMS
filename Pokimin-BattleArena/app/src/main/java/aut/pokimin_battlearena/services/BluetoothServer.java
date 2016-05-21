@@ -154,7 +154,7 @@ public class BluetoothServer implements BluetoothNode {
                     if (message instanceof String) {
                         String response = (String) message;
                         messages.add(response);
-                        battleActivity.setResponseMessage(response);
+                        battleActivity.setBattleResponseMessage(response);
                     } else if (message instanceof Player) {
                         // TODO: set your opponent's information here
                         Player player = (Player) message;
@@ -166,7 +166,7 @@ public class BluetoothServer implements BluetoothNode {
                     }
                 }
             } catch (IOException e) {
-                battleActivity.setResponseMessage("SERVER: Opponent disconnecting");
+                battleActivity.setBattleResponseMessage("SERVER: Opponent disconnecting");
                 Log.w("ChatServer", "Client Disconnecting");
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();

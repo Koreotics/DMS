@@ -80,7 +80,7 @@ public class BattleFragment extends Fragment {
     // ACCESSOR
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    public void setResponseMessage(String message) { this.message.setText(message); }
+    public void setMessage(String message)         { this.message.setText(message); }
     public void setOpponentName(Player player)     { this.opponent.setText(player.getName()); }
     public void setPlayerName(Player player)       { this.player.setText(player.getName()); }
     public void setOpponentHealth(Monster monster) { this.opponentHealth.setProgress(monster.getHealth()); }
