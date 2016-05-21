@@ -90,6 +90,7 @@ public class BluetoothClient implements BluetoothNode {
     @Override
     public void run() {
 
+        // ensure ArrayLists do not contain any objects.
         devices.clear();
         messages.clear();
 
@@ -121,6 +122,7 @@ public class BluetoothClient implements BluetoothNode {
                 }
             });
 
+            // attempt to connect to the first device with the same service
             for (BluetoothDevice device : devices) {
                 try {
                     socket = device.createRfcommSocketToServiceRecord(BluetoothNode.SERVICE_UUID);
@@ -128,11 +130,13 @@ public class BluetoothClient implements BluetoothNode {
                     adapter.cancelDiscovery();
                 } catch (IOException e) { socket = null;}
 
+                // break off for loop once device with service has been found
                 if (socket != null) { break; }
             }
 
             if (socket != null) {
 
+                // change to battle fragment
                 FragmentManager manager = activity.getFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.replace(R.id.battle_fragment, activity.getBattleFragment());
@@ -144,9 +148,12 @@ public class BluetoothClient implements BluetoothNode {
                     }
                 });
 
+                // start receiving messages from server
                 MessageReceiver messageReceiver = new MessageReceiver(socket);
                 Thread receiverThread = new Thread(messageReceiver);
                 receiverThread.start();
+
+                // start sending messages to server
                 while (!stopRequest) {
                     // TODO: start sender thread here
                 }
@@ -158,6 +165,7 @@ public class BluetoothClient implements BluetoothNode {
                 });
             }
 
+            // close all connections
             try {
                 if (socket != null) socket.close();
                 socket = null;
@@ -236,7 +244,6 @@ public class BluetoothClient implements BluetoothNode {
         // FIELDS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         BluetoothSocket    socket;
-//        ObjectOutputStream output;
         ObjectInputStream  input;
 
         // CONSTRUCTOR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -244,7 +251,6 @@ public class BluetoothClient implements BluetoothNode {
         public MessageReceiver(BluetoothSocket socket) {
             try {
                 this.socket = socket;
-//                this.output = new ObjectOutputStream(socket.getOutputStream());
                 this.input  = new ObjectInputStream(socket.getInputStream());
             } catch (IOException e) {
                 System.err.println("Unable to extract output stream: " + e);
@@ -280,7 +286,6 @@ public class BluetoothClient implements BluetoothNode {
 
             try {
                 if (input  != null) input.close();
-//                if (output != null) output.close();
                 if (socket != null) socket.close();
             } catch (IOException ex) {
                 System.err.println("Unable to close connection: " + ex);
@@ -295,14 +300,18 @@ public class BluetoothClient implements BluetoothNode {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 
-            // attempt to find a device
+            // device with bluetooth enabled found
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
                 activity.setSearchResponseMessage("Device(s) found!");
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 synchronized (devices) { devices.add(device); }
+
+            // discovery started
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 activity.setSearchResponseMessage("Searching for devices...");
                 devices.clear();
+
+            // discovery completed
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 synchronized (devices) { devices.notifyAll(); }
                 activity.setSearchResponseMessage("Search completed.");
