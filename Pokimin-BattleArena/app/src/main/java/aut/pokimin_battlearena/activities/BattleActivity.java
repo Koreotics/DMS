@@ -22,6 +22,7 @@ import aut.pokimin_battlearena.R;
 import aut.pokimin_battlearena.fragments.BattleFragment;
 import aut.pokimin_battlearena.fragments.ResultFragment;
 import aut.pokimin_battlearena.dialogs.SearchDialog;
+import aut.pokimin_battlearena.services.BluetoothNode;
 
 /**
  * @author Tristan Borja (1322097)
@@ -44,7 +45,10 @@ public class BattleActivity extends Activity implements Serializable,
     ResultFragment result;
 
     BroadcastReceiver receiver;
+    IntentFilter intentFilter;
     BluetoothAdapter adapter;
+    BluetoothNode client;
+    BluetoothNode server;
 
     Button bluetoothButton;
 
@@ -66,6 +70,11 @@ public class BattleActivity extends Activity implements Serializable,
             battle = new BattleFragment();
             result = new ResultFragment();
 
+            // specifying intent filter
+            intentFilter = new IntentFilter();
+            intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+            intentFilter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+
             // initialise fragment transactions
             FragmentManager     manager     = this.getFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
@@ -78,27 +87,72 @@ public class BattleActivity extends Activity implements Serializable,
             }
 
             // finalise fragment transaction
-            transaction.addToBackStack(null);
             transaction.commit();
-
         }
-
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onPause() {
+        super.onPause();
+        try {
+            if (receiver != null) {
+                unregisterReceiver(receiver);
+            }
+        } catch (IllegalArgumentException ex) {}
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            if (receiver != null) {
+                registerReceiver(receiver, intentFilter);
+            }
+        } catch (IllegalArgumentException ex) {}
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        if (receiver != null) { unregisterReceiver(receiver); }
+        try {
+            if (client != null) { client.stop(); }
+            if (server != null) { server.stop(); }
+            if (receiver != null) { unregisterReceiver(receiver); }
+        } catch (IllegalArgumentException ex) {}
+
     }
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ACCESSORS
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public BattleFragment getBattleFragment() { return battle; }
+    public SearchDialog   getSearchDialog()   { return search; }
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // MUTATORS
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public void setSearchResponseMessage(String message) { search.setMessage(message); }
+    public void setBattleResponseMessage(String message) { battle.setMessage(message);}
+    public void setBattlePlayerName(Player player)       { battle.setPlayerName(player); }
+    public void setBattleOpponentName(Player player)     { battle.setOpponentName(player); }
+    public void setBattlePlayerHealth(Monster monster)   { battle.setPlayerHealth(monster); }
+    public void setBattleOpponentHealth(Monster monster) { battle.setOpponentHealth(monster); }
+
+    public void showServerButton() { search.showServerButton(); }
+    public void showSearchButton() { search.showSearchButton();}
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // UTILITY
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    // REGISTER BLUETOOTH ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public void registerClient(BluetoothNode client) { this.client = client; }
+    public void registerServer(BluetoothNode server) { this.server = server; }
+
+    // BLUETOOTH UTILITY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     public void configBluetooth() {
 
@@ -108,21 +162,17 @@ public class BattleActivity extends Activity implements Serializable,
         if (adapter == null) {
             search.setMessage("This device does not support bluetooth. Get an upgrade mate");
         } else {
+
             if (receiver == null) { receiver = new BluetoothReceiver(); }
 
             // registering receiver
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            filter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
-            registerReceiver(receiver, filter);
+            registerReceiver(receiver, intentFilter);
 
             // enable bluetooth
             if (!adapter.isEnabled()) {
                 search.setMessage("Bluetooth is disabled. Please enable to proceed.");
-
                 Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivity(enableBluetooth);
-
             } else { search.setMessage("Bluetooth is enabled"); }
         }
     }
@@ -131,27 +181,21 @@ public class BattleActivity extends Activity implements Serializable,
 
         // enables device to be discoverable
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+<<<<<<< HEAD
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 10);
+=======
+        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,300);
+>>>>>>> refs/remotes/origin/Tristan
         startActivity(discoverableIntent);
         search.getSearchButton().setVisibility(View.GONE);
     }
 
-    public void transactFragment(int fragmentID) {
+    // MISC UTILITY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    public void transactFragment(int fragmentID) {
         Intent intent = new Intent(this, BattleActivity.class);
         intent.putExtra("fragmentID", fragmentID);
         startActivity(intent);
-    }
-
-    public void setResponseMessage(String message)       { battle.setResponseMessage(message);}
-    public void setBattlePlayerName(Player player)       { battle.setPlayerName(player); }
-    public void setBattleOpponentName(Player player)     { battle.setOpponentName(player); }
-    public void setBattlePlayerHealth(Monster monster)   { battle.setPlayerHealth(monster); }
-    public void setBattleOpponentHealth(Monster monster) { battle.setOpponentHealth(monster); }
-
-    @Override
-    public void onBattleFragmentInteraction() {
-
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -163,35 +207,24 @@ public class BattleActivity extends Activity implements Serializable,
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-                int newState
-                        = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
+                int newState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
                 switch (newState) {
-                    case BluetoothAdapter.STATE_OFF :
-                        search.setMessage("Bluetooth is disabled");
-                        break;
-                    case BluetoothAdapter.STATE_TURNING_ON :
-                        search.setMessage("Enabling bluetooth...");
-                        break;
-                    case BluetoothAdapter.STATE_ON :
-                        search.setMessage("Bluetooth has been enabled");
-                        break;
-                    case BluetoothAdapter.STATE_TURNING_OFF :
-                        search.setMessage("Disabling bluetooth...");
-                        break;
+                    case BluetoothAdapter.STATE_OFF : search.setMessage("Bluetooth is disabled"); break;
+                    case BluetoothAdapter.STATE_TURNING_ON : search.setMessage("Enabling bluetooth..."); break;
+                    case BluetoothAdapter.STATE_ON : search.setMessage("Bluetooth has been enabled"); break;
+                    case BluetoothAdapter.STATE_TURNING_OFF : search.setMessage("Disabling bluetooth..."); break;
                 }
             }
-            else if (intent.getAction().equals
-                    (BluetoothAdapter.ACTION_SCAN_MODE_CHANGED))
-            {  int newScanMode = intent.getIntExtra
-                    (BluetoothAdapter.EXTRA_SCAN_MODE, -1);
+            else if (intent.getAction().equals(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED)) {
+
+                int newScanMode = intent.getIntExtra (BluetoothAdapter.EXTRA_SCAN_MODE, -1);
+
                 switch (newScanMode) {
                     case BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE:
                         search.setMessage("Searching for challenger...");
                         break;
                     case BluetoothAdapter.SCAN_MODE_CONNECTABLE :
                         search.setMessage("Challenger not found.");
-                        search.getServerButton().setVisibility(View.VISIBLE);
-                        search.getSearchButton().setVisibility(View.VISIBLE);
                         break;
                     case BluetoothAdapter.SCAN_MODE_NONE :
                         search.setMessage("Bluetooth is not connected or discoverable");
@@ -200,4 +233,10 @@ public class BattleActivity extends Activity implements Serializable,
             }
         }
     }
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // UNUSED IMPLEMENTATIONS
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    @Override public void onBattleFragmentInteraction() {}
 }

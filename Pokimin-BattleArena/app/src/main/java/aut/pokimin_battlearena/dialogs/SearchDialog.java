@@ -81,12 +81,16 @@ public class SearchDialog extends DialogFragment implements AdapterView.OnClickL
 
     public void setMessage(String message) { this.message.setText(message); }
 
+    public void showServerButton() { this.server.setVisibility(View.VISIBLE); }
+    public void showSearchButton() { this.search.setVisibility(View.VISIBLE); }
+
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // ACCESSOR
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    public Button getServerButton() { return server; }
-    public Button getSearchButton() { return search; }
+    public TextView getMessageView() { return message; }
+    public Button getServerButton()  { return server; }
+    public Button getSearchButton()  { return search; }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // ON CLICK LISTENER
@@ -98,22 +102,36 @@ public class SearchDialog extends DialogFragment implements AdapterView.OnClickL
 
         if (view == search) {
 
-            activity.enableDiscoverable();
+//            activity.enableDiscoverable();
             activity.configBluetooth();
+            search.setVisibility(View.GONE);
 
             BluetoothNode client = new BluetoothClient();
             client.registerActivity(activity);
+
             clientThread = new Thread(client);
             clientThread.start();
 
         } else if (view == cancel) {
             Intent intent = new Intent(getActivity(), MainActivity.class);
+<<<<<<< HEAD
 
             startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+=======
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            activity.startActivity(intent);
+
+            if (serverNode != null) { serverNode.stop(); }
+            if (clientNode != null) { clientNode.stop(); }
+>>>>>>> refs/remotes/origin/Tristan
 
         } else if (view == server) {
 
             message.setText("You have become a server. Awaiting challenger...");
+
+            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+            startActivity(intent);
 
             BluetoothNode server = new BluetoothServer();
             server.registerActivity(activity);

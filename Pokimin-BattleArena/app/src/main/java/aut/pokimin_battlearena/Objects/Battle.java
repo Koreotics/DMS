@@ -79,7 +79,7 @@ public class Battle {
         }
 
         if(monsterDead){
-            //TODO do something, add winner method 
+            //TODO do something, add winner method
         }
 
     }
