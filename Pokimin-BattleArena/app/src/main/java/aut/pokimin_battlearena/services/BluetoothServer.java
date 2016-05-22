@@ -56,7 +56,7 @@ public class BluetoothServer implements BluetoothNode {
         connectedClient = null;
         messages        = new ArrayList<>();
         battleActivity  = null;
-        searchMessage   = battleActivity.getSearchDialog().getMessageView();
+
 
         stopRequest = false;
         handler = new Handler();
@@ -71,7 +71,7 @@ public class BluetoothServer implements BluetoothNode {
 
         connectedClient = null;
         messages.clear();
-
+        searchMessage   = battleActivity.getSearchDialog().getMessageView();
         // setting server socket
         BluetoothServerSocket serverSocket = null;
 
