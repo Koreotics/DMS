@@ -1,5 +1,7 @@
 package aut.pokimin_battlearena.Objects;
 
+import java.util.Random;
+
 import aut.pokimin_battlearena.R;
 
 /**
@@ -33,15 +35,24 @@ public class Battle {
     public Monster getClientMonster() {return clientMonster;}
     public void setClientMonster(Monster clientMonster) {this.clientMonster = clientMonster;}
 
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Battle logic
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-    public void determineFasterMonster(Skill serverSkill, Skill clientSkill){
-
-        //TODO add conditions for when the monsters ahve same speed
+    public void executeBattleRound(Skill serverSkill, Skill clientSkill){
 
         int speedServ = serverSkill.getSpeed() + getServerMonster().getSpeed();
         int speedCli = clientSkill.getSpeed() + getClientMonster().getSpeed();
 
+        //if speed is equal generates faster monster randomly
+        if(speedCli == speedServ){
+            int randNo = new Random().nextInt(9);
+            if (randNo <= 5){
+                calculateMoveResults(getServerMonster(), serverSkill, getClientMonster(), clientSkill);
+            }else{calculateMoveResults(getClientMonster(), clientSkill, getServerMonster(), serverSkill);}
+
+        }
+        //faster monster executes moves first
         if(speedServ > speedCli){
             calculateMoveResults(getServerMonster(), serverSkill, getClientMonster(), clientSkill);
         }else{calculateMoveResults(getClientMonster(), clientSkill, getServerMonster(), serverSkill);}
@@ -49,44 +60,36 @@ public class Battle {
 
     }
 
+    //
     public void calculateMoveResults(Monster fasterMonster, Skill fastSkill,
                                       Monster slowMonster, Skill slowSkill){
 
         boolean monsterDead = false;
         //faster monster uses skill first
         switch(fastSkill.getType()){
-            case "protect": setProtect(true);
-                break;
-            case "damage": monsterDead = dealDamage(fasterMonster, fastSkill, slowMonster);
-                break;
-            case "defence": increaseDefence(fasterMonster, fastSkill);
-                break;
+            case "protect": setProtect(true);break;
+            case "damage": monsterDead = dealDamage(fasterMonster, fastSkill, slowMonster);break;
+            case "defence": increaseDefence(fasterMonster, fastSkill);break;
         }
 
         if(!monsterDead) {
             //slower monster uses skill
             switch (slowSkill.getType()) {
-                case "protect":
-                    setProtect(true);
-                    break;
-                case "damage":
-                    dealDamage(fasterMonster, fastSkill, slowMonster);
-                    break;
-                case "defence":
-                    increaseDefence(fasterMonster, fastSkill);
-                    break;
+                case "protect":setProtect(true);break;
+                case "damage":dealDamage(fasterMonster, fastSkill, slowMonster);break;
+                case "defence":increaseDefence(fasterMonster, fastSkill);break;
             }
         }
 
         if(monsterDead){
-            //TODO do something, add winner method
+            //TODO do something, add winner method(mightnotneed)
         }
 
     }
 
 
     //deals damage to defending monster using attack monster attack and skills attack
-    public boolean dealDamage(Monster attackingMon, Skill attack, Monster defendingMon){
+    private boolean dealDamage(Monster attackingMon, Skill attack, Monster defendingMon){
 
         //assumes if there is a protected monster that it will be the faster monster
         if(!fasterMonsterProtected) {
@@ -107,12 +110,11 @@ public class Battle {
         return false; //returns false if monster didnt die
     }
 
-    public void increaseDefence(Monster monster, Skill skill){
+    private void increaseDefence(Monster monster, Skill skill){
         monster.setDefence(monster.getDefence() + skill.getMultiply());
     }
 
-    public void setProtect(boolean fastMonster){
-
+    private void setProtect(boolean fastMonster){
         if(fastMonster)fasterMonsterProtected = true;
         else{ slowerMonsterProtect = true;}
     }

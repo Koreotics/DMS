@@ -1,5 +1,6 @@
 package aut.pokimin_battlearena.fragments;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,6 +9,7 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -25,13 +27,16 @@ import aut.pokimin_battlearena.services.BluetoothNode;
  * @author Dominic Yuen  (1324837)
  * @author Gierdino Julian Santoso (15894898)
  */
-public class BattleFragment extends Fragment {
+public class BattleFragment extends Fragment implements View.OnClickListener{
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // FIELDS
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     OnFragmentInteractionListener mListener;
+
+    BluetoothNode bluetoothNode;
+    BattleActivity battleActivity;
 
     TextView message;
     TextView opponent;
@@ -40,6 +45,8 @@ public class BattleFragment extends Fragment {
     ProgressBar opponentHealth;
     ProgressBar playerHealth;
 
+    Button test;
+
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // FRAGMENT
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,14 +54,21 @@ public class BattleFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup,
                              Bundle savedInstanceState) {
+
+        battleActivity = (BattleActivity) getActivity();
+        bluetoothNode = battleActivity.getBluetoothNode();
+
         View view = inflater.inflate(R.layout.fragment_battle, viewGroup, false);
 
-        message  = (TextView) view.findViewById(R.id.battle_response_message);
+        message = (TextView) view.findViewById(R.id.battle_response_message);
         opponent = (TextView) view.findViewById(R.id.battle_opponent_name);
-        player   = (TextView) view.findViewById(R.id.battle_player_name);
+        player = (TextView) view.findViewById(R.id.battle_player_name);
 
         opponentHealth = (ProgressBar) view.findViewById(R.id.opponent_hp);
-        playerHealth   = (ProgressBar) view.findViewById(R.id.player_hp);
+        playerHealth = (ProgressBar) view.findViewById(R.id.player_hp);
+
+        test = (Button) view.findViewById(R.id.testButton);
+        test.setOnClickListener(this);
 
         return view;
     }
@@ -108,6 +122,12 @@ public class BattleFragment extends Fragment {
         }
 
     }
+
+    @Override
+    public void onClick(View v) {
+        //when test button is pressed
+        bluetoothNode.forward("test");
+    }
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // CLASS
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -115,4 +135,6 @@ public class BattleFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void onBattleFragmentInteraction();
     }
+
+
 }

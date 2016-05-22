@@ -114,16 +114,16 @@ public class SearchDialog extends DialogFragment implements AdapterView.OnClickL
 
         } else if (view == cancel) {
             Intent intent = new Intent(getActivity(), MainActivity.class);
-<<<<<<< HEAD
+
 
             startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-=======
+
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             activity.startActivity(intent);
 
             if (serverNode != null) { serverNode.stop(); }
             if (clientNode != null) { clientNode.stop(); }
->>>>>>> refs/remotes/origin/Tristan
+
 
         } else if (view == server) {
 

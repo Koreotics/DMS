@@ -43,6 +43,7 @@ public class Skill {
     public void setMultiply(double multiply) {this.multiply = multiply;}
     public int getMaxPP() {return maxPP;}
     public void reducePP() {this.maxPP = maxPP - 1;}
+    public void setMaxPP(int pp) {this.maxPP = pp;}
     public int getSpeed() {return speed;}
     public void setSpeed(int speed) {this.speed = speed;}
 }

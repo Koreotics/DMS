@@ -47,8 +47,7 @@ public class BattleActivity extends Activity implements Serializable,
     BroadcastReceiver receiver;
     IntentFilter intentFilter;
     BluetoothAdapter adapter;
-    BluetoothNode client;
-    BluetoothNode server;
+    BluetoothNode bluetoothNode;
 
     Button bluetoothButton;
 
@@ -115,8 +114,7 @@ public class BattleActivity extends Activity implements Serializable,
     public void onStop() {
         super.onStop();
         try {
-            if (client != null) { client.stop(); }
-            if (server != null) { server.stop(); }
+            if (bluetoothNode != null) { bluetoothNode.stop(); }
             if (receiver != null) { unregisterReceiver(receiver); }
         } catch (IllegalArgumentException ex) {}
 
@@ -128,7 +126,7 @@ public class BattleActivity extends Activity implements Serializable,
 
     public BattleFragment getBattleFragment() { return battle; }
     public SearchDialog   getSearchDialog()   { return search; }
-
+    public BluetoothNode getBluetoothNode() {return bluetoothNode;}
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // MUTATORS
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -149,8 +147,8 @@ public class BattleActivity extends Activity implements Serializable,
 
     // REGISTER BLUETOOTH ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    public void registerClient(BluetoothNode client) { this.client = client; }
-    public void registerServer(BluetoothNode server) { this.server = server; }
+    public void registerBluetoothNode(BluetoothNode node) { this.bluetoothNode = node; }
+
 
     // BLUETOOTH UTILITY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -181,11 +179,10 @@ public class BattleActivity extends Activity implements Serializable,
 
         // enables device to be discoverable
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-<<<<<<< HEAD
+
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 10);
-=======
+
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,300);
->>>>>>> refs/remotes/origin/Tristan
         startActivity(discoverableIntent);
         search.getSearchButton().setVisibility(View.GONE);
     }
