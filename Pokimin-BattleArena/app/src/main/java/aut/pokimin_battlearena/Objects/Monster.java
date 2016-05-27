@@ -36,6 +36,10 @@ public class Monster implements Serializable {
 
     }
 
+    //saves the stats of the Current instance of Monster into the databse
+    public void saveMonsterCurrentInfo(){dbc.setMonsterCurrentStats(this.name, this);}
+
+
 
     public void printInfo(){
         Log.v("monsterInfo", name);

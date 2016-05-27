@@ -35,6 +35,8 @@ public class Player implements Serializable {
     public String getName() {return name;}
     public void setName(String name) {this.name = name;}
     public Monster getActiveMonster() {return activeMonster;}
-    public void setActiveMonster(Monster activeMonster) {this.activeMonster = activeMonster;}
+    public void setActiveMonster(Monster monster) {
+        this.monster = activeMonster;
+        dbc.setActiveMonster(getName(), monster.getName()); }//saves active monster into database}
 
 }
