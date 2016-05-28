@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import aut.pokimin_battlearena.Objects.Player;
 import aut.pokimin_battlearena.R;
 import aut.pokimin_battlearena.fragments.MainMenuFragment;
 import aut.pokimin_battlearena.dialogs.RegisterDialog;
@@ -20,6 +21,7 @@ import aut.pokimin_battlearena.services.DatabaseController;
 public class MainActivity extends Activity implements
         MainMenuFragment.OnFragmentInteractionListener {
 
+    Player myPlayer;
     public DatabaseController database;
 
     @Override
@@ -39,7 +41,9 @@ public class MainActivity extends Activity implements
             transaction.replace(R.id.main_fragment, menu);
 
             TextView playerName = (TextView) findViewById(R.id.main_player_name);
-            playerName.setText(database.getPlayerName());
+
+            myPlayer = new Player(this, database.getPlayerName());
+            playerName.setText(myPlayer.getName());
 
         } else {
             RegisterDialog register = new RegisterDialog();
@@ -81,6 +85,7 @@ public class MainActivity extends Activity implements
             case 1: intent = new Intent(this, MinionActivity.class); break;
             case 2:
                 intent.putExtra("fragmentID", 0);
+                intent.putExtra("player", getMyPlayer());
                 intent = new Intent(this, BattleActivity.class);
                 break;
         }
@@ -88,4 +93,6 @@ public class MainActivity extends Activity implements
         startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 
     }
+
+    public Player getMyPlayer() {return myPlayer;}
 }

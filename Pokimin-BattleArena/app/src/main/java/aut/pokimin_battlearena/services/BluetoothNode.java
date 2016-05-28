@@ -26,7 +26,7 @@ public interface BluetoothNode extends Runnable, Serializable {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     // forward a message to all chat nodes in the Bluetooth network
-    public void forward(String message);
+    public void forward(Object message);
     // stop this chat node and clean up
     public void stop();
     // registers or unregisters (if null) a ChatActivity for display

@@ -21,6 +21,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import aut.pokimin_battlearena.Objects.Message.InitMessage;
 import aut.pokimin_battlearena.Objects.Monster;
 import aut.pokimin_battlearena.Objects.Player;
 import aut.pokimin_battlearena.R;
@@ -92,7 +93,7 @@ public class BluetoothServer implements BluetoothNode {
                         searchMessage.setText("Looking for devices...");
                     }
                 });
-                 socket = serverSocket.accept(10000);
+                 socket = serverSocket.accept(30000);
 
                 handler.post(new Runnable() {
                     public void run() {
@@ -143,17 +144,17 @@ public class BluetoothServer implements BluetoothNode {
     }
 
     @Override
-    public void forward(String message) {
-        synchronized (messages) {
-            messages.add(message);
-            messages.notifyAll();
-        }
-//        if(connectedClient != null)
-//            try {
-//                connectedClient.send(message);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
+    public void forward(Object message) {
+//        synchronized (messages) {
+//            messages.add(message);
+//            messages.notifyAll();
+//        }
+        if(connectedClient != null)
+            try {
+                connectedClient.send(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     }
 
     @Override
@@ -249,29 +250,28 @@ public class BluetoothServer implements BluetoothNode {
     private class MessageSender implements Runnable
     {
         public void run()
-        {  while (!stopRequest)
-        {  // get a message
-            String message;
-            synchronized (messages)
-            {  while (messages.size() == 0)
-            {  try
-            {  messages.wait();
-            }
-            catch (InterruptedException e)
-            { // ignore
-            }
-                if (stopRequest)
-                    return;
-            }
-                message = messages.remove(0);
-            }
+        {  //while (!stopRequest)
+       // {  // get a message
+//            String message;
+//            synchronized (messages)
+//            {
+//                while (messages.size() == 0)
+//                {  try{  messages.wait();}
+//                    catch (InterruptedException e)
+//                    { // ignore
+//                    }
+//                    if (stopRequest)
+//                        return;
+//                }
+//                message = messages.remove(0);
+//            }
             // put message on server display
 //            if (battleActivity != null)
 //                battleActivity.showReceivedMessage("RECEIVED: "+message);
             // pass message to all clients
             try
-            {  connectedClient.send(message);
-                battleActivity.setBattleResponseMessage("Sent Message: " + message);
+            {  connectedClient.send(new InitMessage("yoyo", new Player(this, )));
+                //battleActivity.setBattleResponseMessage("Sent Message: yoyo" );
                 Log.d("Sending message: ", "from Server");
 
             }
@@ -279,7 +279,7 @@ public class BluetoothServer implements BluetoothNode {
             {
                 Log.e("Server", "Message failed to send: " + e);
             }
-            }
+        //}
         }
         }
 
