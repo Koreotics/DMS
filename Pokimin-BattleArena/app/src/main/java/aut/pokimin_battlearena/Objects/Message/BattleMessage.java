@@ -4,7 +4,9 @@ import aut.pokimin_battlearena.Objects.Monster;
 import aut.pokimin_battlearena.Objects.Player;
 
 /**
- * Created by Dom on 20/05/2016.
+ * @author Tristan Borja (1322097)
+ * @author Dominic Yuen  (1324837)
+ * @author Gierdino Julian Santoso (15894898)
  */
 public class BattleMessage extends AbstractMessage {
 
@@ -18,8 +20,8 @@ public class BattleMessage extends AbstractMessage {
     }
 
     public Monster getClientMonster() {return clientMonster;}
+    public Monster getServerMonster() {return serverMonster;}
 
     public void setClientMonster(Monster clientMonster) {this.clientMonster = clientMonster;}
-    public Monster getServerMonster() {return serverMonster;}
     public void setServerMonster(Monster serverMonster) {this.serverMonster = serverMonster;}
 }

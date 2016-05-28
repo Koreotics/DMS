@@ -18,11 +18,14 @@ import java.io.Serializable;
 
 import aut.pokimin_battlearena.Objects.Monster;
 import aut.pokimin_battlearena.Objects.Player;
+import aut.pokimin_battlearena.Objects.Skill;
 import aut.pokimin_battlearena.R;
 import aut.pokimin_battlearena.fragments.BattleFragment;
 import aut.pokimin_battlearena.fragments.ResultFragment;
 import aut.pokimin_battlearena.dialogs.SearchDialog;
+import aut.pokimin_battlearena.services.BluetoothClient;
 import aut.pokimin_battlearena.services.BluetoothNode;
+import aut.pokimin_battlearena.services.BluetoothServer;
 
 /**
  * @author Tristan Borja (1322097)
@@ -47,8 +50,8 @@ public class BattleActivity extends Activity implements Serializable,
     BroadcastReceiver receiver;
     IntentFilter intentFilter;
     BluetoothAdapter adapter;
-    BluetoothNode client;
-    BluetoothNode server;
+    BluetoothClient client;
+    BluetoothServer server;
 
     Player player;
 
@@ -152,8 +155,13 @@ public class BattleActivity extends Activity implements Serializable,
 
     // REGISTER BLUETOOTH ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    public void registerClient(BluetoothNode client) { this.client = client; }
-    public void registerServer(BluetoothNode server) { this.server = server; }
+    public void registerClient(BluetoothClient client) { this.client = client; }
+    public void registerServer(BluetoothServer server) { this.server = server; }
+
+    // SENDING CLIENT MESSAGES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public void sendActiveSkill(Skill skill) { client.sendActiveSkill(skill); }
+    public void sendPlayerInfo()             { client.sendPlayerInfo(); }
 
     // BLUETOOTH UTILITY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

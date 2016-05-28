@@ -5,7 +5,9 @@ import android.os.Message;
 import aut.pokimin_battlearena.Objects.Player;
 
 /**
- * Created by Dom on 20/05/2016.
+ * @author Tristan Borja (1322097)
+ * @author Dominic Yuen  (1324837)
+ * @author Gierdino Julian Santoso (15894898)
  */
 public class ResultMessage extends AbstractMessage {
 

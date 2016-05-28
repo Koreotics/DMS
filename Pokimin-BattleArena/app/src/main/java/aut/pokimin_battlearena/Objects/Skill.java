@@ -6,7 +6,9 @@ import android.util.Log;
 import aut.pokimin_battlearena.services.DatabaseController;
 
 /**
- * Created by Dom on 13/05/2016.
+ * @author Tristan Borja (1322097)
+ * @author Dominic Yuen  (1324837)
+ * @author Gierdino Julian Santoso (15894898)
  */
 public class Skill {
 

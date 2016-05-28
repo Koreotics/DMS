@@ -3,7 +3,9 @@ package aut.pokimin_battlearena.Objects.Message;
 import java.io.Serializable;
 
 /**
- * Created by Dom on 20/05/2016.
+ * @author Tristan Borja (1322097)
+ * @author Dominic Yuen  (1324837)
+ * @author Gierdino Julian Santoso (15894898)
  */
 public abstract class AbstractMessage implements Serializable{
 
@@ -14,4 +16,6 @@ public abstract class AbstractMessage implements Serializable{
         this.message = message;
 
     }
+
+    public String getMessage() { return message; }
 }

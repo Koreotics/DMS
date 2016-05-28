@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import aut.pokimin_battlearena.Objects.Message.BattleMessage;
+import aut.pokimin_battlearena.Objects.Message.InitMessage;
+import aut.pokimin_battlearena.Objects.Message.SkillMessage;
 import aut.pokimin_battlearena.Objects.Monster;
 import aut.pokimin_battlearena.Objects.Player;
 import aut.pokimin_battlearena.Objects.Skill;
@@ -56,10 +59,11 @@ public class BluetoothClient implements BluetoothNode {
     private BluetoothDevice serverDevice;
     private BluetoothAdapter adapter;
 
-    // message related fields
+    // connection related fields
     private List<String> messages;
     private BattleActivity activity;
     private BroadcastReceiver receiver;
+    private ServerConnection connection;
 
     Handler handler;
     TextView searchMessage;
@@ -71,12 +75,14 @@ public class BluetoothClient implements BluetoothNode {
 
     public BluetoothClient() {
         devices      = new ArrayList<>();
+        messages     = new ArrayList<>();
+
         socket       = null;
         serverDevice = null;
-        messages     = new ArrayList<>();
         activity     = null;
         receiver     = null;
         adapter      = null;
+        connection   = null;
 
         stopRequest = false;
 
@@ -151,8 +157,8 @@ public class BluetoothClient implements BluetoothNode {
                 });
 
                 // start receiving messages from server
-                MessageReceiver messageReceiver = new MessageReceiver(socket);
-                Thread receiverThread = new Thread(messageReceiver);
+                connection = new ServerConnection(socket);
+                Thread receiverThread = new Thread(connection);
                 receiverThread.start();
 
                 // start sending messages to server
@@ -226,37 +232,51 @@ public class BluetoothClient implements BluetoothNode {
     // SENDING MESSAGES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     public void sendPlayerInfo() {
-        // TODO: send player information to server
+        ObjectOutputStream output = connection.output;
+
+        try {
+            String message = "client has connected";
+            InitMessage initMessage = new InitMessage(message, null, activity.getPlayer());
+            output.writeObject(initMessage);
+        } catch (IOException e) {
+            System.err.println("Unable to send the player to the server: " + e);
+        }
     }
 
     public void sendActiveSkill(Skill skill) {
-        // TODO: send activated skill to server
+        ObjectOutputStream output = connection.output;
+
+        try {
+            Monster monster = activity.getPlayer().getActiveMonster();
+            String message = monster.getName() + " has used to skill " + skill;
+
+            SkillMessage skillMessage = new SkillMessage(message, null, null, monster, skill);
+            output.writeObject(skillMessage);
+
+        } catch (IOException e) {
+            System.err.println("Unable to send selected skill to the server: " + e);
+        }
     }
-
-    public void sendMessage(String message) {
-        // TODO: send a message to server for debugging purposes
-    }
-
-    // POPULATE MOVES GRIDVIEW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // CLASSES
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    public class MessageReceiver implements Runnable {
+    public class ServerConnection implements Runnable {
 
         // FIELDS ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         BluetoothSocket    socket;
         ObjectInputStream  input;
+        ObjectOutputStream output;
 
         // CONSTRUCTOR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-        public MessageReceiver(BluetoothSocket socket) {
+        public ServerConnection(BluetoothSocket socket) {
             try {
                 this.socket = socket;
                 this.input  = new ObjectInputStream(socket.getInputStream());
+                this.output = new ObjectOutputStream(socket.getOutputStream());
             } catch (IOException e) {
                 System.err.println("Unable to extract output stream: " + e);
             }
@@ -274,14 +294,39 @@ public class BluetoothClient implements BluetoothNode {
                         String response = (String) object;
                         messages.add(response);
                         activity.setBattleResponseMessage(response);
-                    } else if (object instanceof Player) {
-                        // TODO: set your opponent's information here
-                        Player player = (Player) object;
-                        activity.setBattleOpponentName(player);
-                    } else if (object instanceof Monster) {
-                        // TODO: set your opponent's minion stats here
-                        Monster monster = (Monster) object;
-                        activity.setBattleOpponentHealth(monster);
+                    } else if (object instanceof InitMessage) {
+
+                        InitMessage message = (InitMessage) object;
+                        Player clientPlayer = message.getClientPlayer();
+                        Player serverPlayer = message.getServerPlayer();
+
+                        messages.add(message.getMessage());
+                        activity.setBattleResponseMessage(message.getMessage());
+
+                        if (serverPlayer != null) {
+                            activity.setBattleOpponentName(serverPlayer);
+                            activity.setBattleOpponentHealth(serverPlayer.getActiveMonster());
+                        }
+
+                        if (clientPlayer != null) {
+                            activity.setBattlePlayerName(clientPlayer);
+                            activity.setBattlePlayerHealth(clientPlayer.getActiveMonster());
+                        }
+
+                    } else if (object instanceof BattleMessage) {
+                        BattleMessage message = (BattleMessage) object;
+
+                        messages.add(message.getMessage());
+                        activity.setBattleResponseMessage(message.getMessage());
+
+                        if (message.getServerMonster() != null) {
+                            activity.setBattleOpponentHealth(message.getServerMonster());
+                        }
+
+                        if (message.getClientMonster() != null) {
+                            activity.setBattlePlayerHealth(message.getClientMonster());
+                        }
+
                     }
                 }
             }
@@ -291,6 +336,7 @@ public class BluetoothClient implements BluetoothNode {
 
             try {
                 if (input  != null) input.close();
+                if (output != null) output.close();
                 if (socket != null) socket.close();
             } catch (IOException ex) {
                 System.err.println("Unable to close connection: " + ex);

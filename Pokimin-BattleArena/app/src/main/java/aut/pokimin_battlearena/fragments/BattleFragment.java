@@ -57,16 +57,15 @@ public class BattleFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_battle, viewGroup, false);
 
+        // retrieving views from layout
         message  = (TextView) view.findViewById(R.id.battle_response_message);
         opponent = (TextView) view.findViewById(R.id.battle_opponent_name);
         player   = (TextView) view.findViewById(R.id.battle_player_name);
-
-        moveSet = (GridView) view.findViewById(R.id.move_sets);
-
+        moveSet  = (GridView) view.findViewById(R.id.move_sets);
         opponentHealth = (ProgressBar) view.findViewById(R.id.opponent_hp);
         playerHealth   = (ProgressBar) view.findViewById(R.id.player_hp);
 
-        BattleActivity activity = (BattleActivity) getActivity();
+        final BattleActivity activity = (BattleActivity) getActivity();
         Monster minion = activity.getPlayer().getActiveMonster();
 
         ArrayList<Skill> minionMoves = new ArrayList<>();
@@ -76,15 +75,19 @@ public class BattleFragment extends Fragment {
         minionMoves.add(minion.getSkill3());
         minionMoves.add(minion.getSkill4());
 
+        // setting player information
+        player.setText(minion.getName());
+        playerHealth.setProgress(minion.getHealth());
+
+        // setting moves within moveSet
         final MovesAdapter adapter = new MovesAdapter(view.getContext(), (Skill[]) minionMoves.toArray());
         moveSet.setAdapter(adapter);
-
         moveSet.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Skill selectedMove = (Skill) adapter.getItem(position);
-                // TODO send move to server.
+                activity.sendActiveSkill(selectedMove);
             }
         });
 

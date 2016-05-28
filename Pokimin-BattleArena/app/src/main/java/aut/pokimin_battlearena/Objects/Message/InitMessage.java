@@ -1,11 +1,15 @@
 package aut.pokimin_battlearena.Objects.Message;
 
+import java.io.Serializable;
+
 import aut.pokimin_battlearena.Objects.Player;
 
 /**
- * Created by Dom on 20/05/2016.
+ * @author Tristan Borja (1322097)
+ * @author Dominic Yuen  (1324837)
+ * @author Gierdino Julian Santoso (15894898)
  */
-public class InitMessage extends AbstractMessage{
+public class InitMessage extends AbstractMessage {
 
     private Player serverPlayer;
     private Player clientPlayer;
