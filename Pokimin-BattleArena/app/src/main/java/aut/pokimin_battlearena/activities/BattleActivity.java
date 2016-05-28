@@ -50,6 +50,7 @@ public class BattleActivity extends Activity implements Serializable,
     BluetoothNode bluetoothNode;
 
     Button bluetoothButton;
+    Player myPlayer;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // ACTIVITY
@@ -88,6 +89,7 @@ public class BattleActivity extends Activity implements Serializable,
             // finalise fragment transaction
             transaction.commit();
         }
+        myPlayer = (Player) getIntent().getSerializableExtra("player");
     }
 
     @Override

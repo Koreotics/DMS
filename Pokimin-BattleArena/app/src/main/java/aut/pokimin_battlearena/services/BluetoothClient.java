@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.TextView;
 
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import aut.pokimin_battlearena.Objects.Message.InitMessage;
 import aut.pokimin_battlearena.Objects.Monster;
 import aut.pokimin_battlearena.Objects.Player;
 import aut.pokimin_battlearena.Objects.Skill;
@@ -139,6 +141,7 @@ public class BluetoothClient implements BluetoothNode {
             if (socket != null) {
 
                 // change to battle fragment
+
                 FragmentManager manager = activity.getFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.replace(R.id.battle_fragment, activity.getBattleFragment());
@@ -189,10 +192,10 @@ public class BluetoothClient implements BluetoothNode {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     @Override
-    public void forward(String message) {
+    public void forward(Object message) {
 
         synchronized (messages) {
-            messages.add(message);
+            messages.add((String) message);
             messages.notifyAll();
         }
 
@@ -273,13 +276,26 @@ public class BluetoothClient implements BluetoothNode {
                     Object object = input.readObject();
 
                     if (object instanceof String) {
-                        String response = (String) object;
+                        final String response = (String) object;
                         messages.add(response);
-                        activity.setBattleResponseMessage(response);
-                    } else if (object instanceof Player) {
+                        activity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                activity.setBattleResponseMessage(response);
+                            }
+                        });
+
+                    } else if (object instanceof InitMessage) {
                         // TODO: set your opponent's information here
-                        Player player = (Player) object;
-                        activity.setBattleOpponentName(player);
+                        final InitMessage message = (InitMessage) object;
+                        activity.runOnUiThread(new Runnable() {
+
+                            @Override
+                            public void run() {
+
+                                activity.setBattleOpponentName(message.getServerPlayer());
+                            }
+                        });
                     } else if (object instanceof Monster) {
                         // TODO: set your opponent's minion stats here
                         Monster monster = (Monster) object;
@@ -316,7 +332,7 @@ public class BluetoothClient implements BluetoothNode {
             // discovery started
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 activity.setSearchResponseMessage("Searching for devices...");
-                devices.clear();
+
 
             // discovery completed
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
