@@ -213,10 +213,10 @@ public class BluetoothClient implements BluetoothNode {
         stopRequest = true;
 
 
-        if (receiver != null) {
-            receiver = null; }
 
-        if (receiver != null) { activity.unregisterReceiver(receiver); }
+
+        if (receiver != null) { activity.unregisterReceiver(receiver);
+            receiver = null;}
 
 
         // notify array lists
@@ -404,7 +404,7 @@ public class BluetoothClient implements BluetoothNode {
             // discovery started
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 activity.setSearchResponseMessage("Searching for devices...");
-                devices.clear();
+                //devices.clear();
 
             // discovery completed
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
