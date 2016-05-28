@@ -9,10 +9,39 @@
 
     tools:context=".fragments.ResultFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/winner"
+        android:gravity="center"
+
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+
+        android:text="@string/player_name_filler"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+    />
+
+    <TextView
+        android:id="@+id/exp_gained"
+        android:gravity="center"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/winner"
+
+        android:text="exp gained"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+    />
+
+    <Button
+        android:id="@+id/back_button"
+        android:text="Back to Main Menu"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/exp_gained"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="@dimen/text_margin"
+        android:layout_marginRight="@dimen/text_margin"
+        android:layout_marginTop="@dimen/text_margin"/>
 
 </RelativeLayout>

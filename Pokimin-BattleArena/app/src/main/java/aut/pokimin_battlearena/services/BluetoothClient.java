@@ -27,12 +27,14 @@ import java.util.UUID;
 
 import aut.pokimin_battlearena.Objects.Message.BattleMessage;
 import aut.pokimin_battlearena.Objects.Message.InitMessage;
+import aut.pokimin_battlearena.Objects.Message.ResultMessage;
 import aut.pokimin_battlearena.Objects.Message.SkillMessage;
 import aut.pokimin_battlearena.Objects.Monster;
 import aut.pokimin_battlearena.Objects.Player;
 import aut.pokimin_battlearena.Objects.Skill;
 import aut.pokimin_battlearena.R;
 import aut.pokimin_battlearena.activities.BattleActivity;
+import aut.pokimin_battlearena.fragments.ResultFragment;
 
 
 /**
@@ -303,6 +305,7 @@ public class BluetoothClient implements BluetoothNode {
                         messages.add(message.getMessage());
                         activity.setBattleResponseMessage(message.getMessage());
 
+                        // set name and health of both monsters
                         if (serverPlayer != null) {
                             activity.setBattleOpponentName(serverPlayer);
                             activity.setBattleOpponentHealth(serverPlayer.getActiveMonster());
@@ -314,18 +317,38 @@ public class BluetoothClient implements BluetoothNode {
                         }
 
                     } else if (object instanceof BattleMessage) {
-                        BattleMessage message = (BattleMessage) object;
 
+                        BattleMessage message = (BattleMessage) object;
                         messages.add(message.getMessage());
                         activity.setBattleResponseMessage(message.getMessage());
 
+                        // change health of monsters
                         if (message.getServerMonster() != null) {
                             activity.setBattleOpponentHealth(message.getServerMonster());
                         }
-
                         if (message.getClientMonster() != null) {
                             activity.setBattlePlayerHealth(message.getClientMonster());
                         }
+
+                    } else if (object instanceof ResultMessage) {
+
+                        ResultMessage message = (ResultMessage) object;
+                        messages.add(message.getMessage());
+
+                        // set text on result fragment
+                        ResultFragment fragment= activity.getResultFragment();
+                        fragment.setExp(message.getExpGain());
+                        fragment.setWinner(message.getWinner());
+
+                        // add exp gained to monster
+                        Monster minion = activity.getPlayer().getActiveMonster();
+                        minion.setExp(minion.getExp() + message.getExpGain());
+
+                        // transact to result fragment
+                        FragmentManager manager = activity.getFragmentManager();
+                        FragmentTransaction transaction = manager.beginTransaction();
+                        transaction.replace(R.id.battle_fragment, fragment);
+                        transaction.commit();
 
                     }
                 }

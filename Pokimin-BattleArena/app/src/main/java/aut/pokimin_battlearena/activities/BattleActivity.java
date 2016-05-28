@@ -33,7 +33,8 @@ import aut.pokimin_battlearena.services.BluetoothServer;
  * @author Gierdino Julian Santoso (15894898)
  */
 public class BattleActivity extends Activity implements Serializable,
-        BattleFragment.OnFragmentInteractionListener {
+        BattleFragment.OnFragmentInteractionListener,
+        ResultFragment.OnFragmentInteractionListener {
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // FIELDS
@@ -132,6 +133,7 @@ public class BattleActivity extends Activity implements Serializable,
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     public BattleFragment getBattleFragment() { return battle; }
+    public ResultFragment getResultFragment() { return result; }
     public SearchDialog   getSearchDialog()   { return search; }
     public Player         getPlayer()         { return player; }
 
@@ -246,4 +248,5 @@ public class BattleActivity extends Activity implements Serializable,
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     @Override public void onBattleFragmentInteraction() {}
+    @Override public void onResultFragmentInteraction() {}
 }
