@@ -6,15 +6,17 @@ import android.util.Log;
 import aut.pokimin_battlearena.services.DatabaseController;
 
 /**
- * Created by Dom on 13/05/2016.
+ * @author Tristan Borja (1322097)
+ * @author Dominic Yuen  (1324837)
+ * @author Gierdino Julian Santoso (15894898)
  */
 public class Skill {
 
-    public String name = "";
-    public String type = "";
-    public double multiply = 0;
-    public int maxPP = 0;
-    public int speed = 0;
+    private String name = "";
+    private String type = "";
+    private double multiply = 0;
+    private int maxPP = 0;
+    private int speed = 0;
 
     DatabaseController dbc;
 
@@ -42,6 +44,8 @@ public class Skill {
     public double getMultiply() {return multiply;}
     public void setMultiply(double multiply) {this.multiply = multiply;}
     public int getMaxPP() {return maxPP;}
-    public void setMaxPP(int maxPP) {this.maxPP = maxPP;}public int getSpeed() {return speed;}
+    public void reducePP() {this.maxPP = maxPP - 1;}
+    public void setMaxPP(int pp) {this.maxPP = pp;}
+    public int getSpeed() {return speed;}
     public void setSpeed(int speed) {this.speed = speed;}
 }

@@ -1,14 +1,31 @@
 package aut.pokimin_battlearena.fragments;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+
+import aut.pokimin_battlearena.Objects.Monster;
+import aut.pokimin_battlearena.Objects.Player;
+import aut.pokimin_battlearena.Objects.Skill;
 import aut.pokimin_battlearena.R;
+import aut.pokimin_battlearena.activities.BattleActivity;
+import aut.pokimin_battlearena.services.BluetoothNode;
+import aut.pokimin_battlearena.utils.MovesAdapter;
 
 
 /**
@@ -17,60 +34,83 @@ import aut.pokimin_battlearena.R;
  * @author Gierdino Julian Santoso (15894898)
  */
 public class BattleFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // FIELDS
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    private OnFragmentInteractionListener mListener;
+    OnFragmentInteractionListener mListener;
 
-    public BattleFragment() {
-        super();
-    }
+    BluetoothNode bluetoothNode;
+    BattleActivity battleActivity;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BattleFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BattleFragment newInstance(String param1, String param2) {
-        BattleFragment fragment = new BattleFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    TextView message;
+    TextView opponent;
+    TextView player;
+
+    GridView moveSet;
+
+    ProgressBar opponentHealth;
+    ProgressBar playerHealth;
+
+    Button test;
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // FRAGMENT
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_battle, container, false);
-    }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+        battleActivity = (BattleActivity) getActivity();
+        bluetoothNode = battleActivity.getBluetoothNode();
+
+        View view = inflater.inflate(R.layout.fragment_battle, viewGroup, false);
+
+        // retrieving views from layout
+        message  = (TextView) view.findViewById(R.id.battle_response_message);
+        opponent = (TextView) view.findViewById(R.id.battle_opponent_name);
+        player   = (TextView) view.findViewById(R.id.battle_player_name);
+        moveSet  = (GridView) view.findViewById(R.id.move_sets);
+        opponentHealth = (ProgressBar) view.findViewById(R.id.opponent_hp);
+        playerHealth   = (ProgressBar) view.findViewById(R.id.player_hp);
+
+        test = (Button) view.findViewById(R.id.testButton);
+        test.setOnClickListener(new AdapterView.OnClickListener() {
+            public void onClick(View v) {
+                //when test button is pressed
+                bluetoothNode.forward("test");
+            }
+        });
+
+        final BattleActivity activity = (BattleActivity) getActivity();
+        Monster minion = activity.getPlayer().getActiveMonster();
+
+        ArrayList<Skill> minionMoves = new ArrayList<>();
+
+        minionMoves.add(minion.getSkill1());
+        minionMoves.add(minion.getSkill2());
+        minionMoves.add(minion.getSkill3());
+        minionMoves.add(minion.getSkill4());
+
+        // setting player information
+        player.setText(minion.getName());
+        playerHealth.setProgress(minion.getHealth());
+
+        // setting moves within moveSet
+        final MovesAdapter adapter = new MovesAdapter(view.getContext(), (Skill[]) minionMoves.toArray());
+        moveSet.setAdapter(adapter);
+        moveSet.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Skill selectedMove = (Skill) adapter.getItem(position);
+                activity.sendActiveSkill(selectedMove);
+            }
+        });
+
+        return view;
     }
 
     @Override
@@ -90,18 +130,46 @@ public class BattleFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ACCESSOR
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public void setMessage(String message)         { this.message.setText(message); }
+    public void setOpponentName(Player player)     { this.opponent.setText(player.getName()); }
+    public void setPlayerName(Player player)       { this.player.setText(player.getName()); }
+    public void setOpponentHealth(Monster monster) { this.opponentHealth.setProgress(monster.getHealth()); }
+    public void setPlayerHealth(Monster monster)   { this.playerHealth.setProgress(monster.getHealth()); }
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // UTILITY
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public void checkHealth() {
+
+        Intent intent = null;
+
+        if (opponentHealth.getProgress() <= 0) {
+            intent = new Intent(getActivity(), BattleActivity.class);
+            intent.putExtra("result", opponent.getText());
+        } else if (playerHealth.getProgress() <= 0) {
+            intent = new Intent(getActivity(), BattleActivity.class);
+            intent.putExtra("result", player.getText());
+        }
+
+        if (intent != null) {
+            intent.putExtra("fragmentID", BattleActivity.RESULT_FRAGMENT);
+            startActivity(intent);
+        }
+
     }
+    
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // CLASS
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public interface OnFragmentInteractionListener {
+        void onBattleFragmentInteraction();
+    }
+
+
 }

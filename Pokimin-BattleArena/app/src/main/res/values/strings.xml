@@ -21,4 +21,13 @@
     <string name="create_account">Create new account</string>
     <string name="player_name_hint">Player name</string>
     <string name="register_button">Register</string>
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <!-- Skill Types -->
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <string name="skill_damage">damage</string>
+    <string name="skill_defence">defence</string>
+    <string name="skill_protect">protect</string>
+
 </resources>

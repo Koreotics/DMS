@@ -51,7 +51,6 @@ public class MainActivity extends Activity implements
             register.show(manager, "Register");
         }
 
-        transaction.addToBackStack(null);
         transaction.commit();
 
 
@@ -86,7 +85,7 @@ public class MainActivity extends Activity implements
                 break;
         }
 
-        startActivity(intent);
+        startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 
     }
 }
