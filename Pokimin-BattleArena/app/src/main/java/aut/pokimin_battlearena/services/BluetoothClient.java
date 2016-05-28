@@ -298,47 +298,60 @@ public class BluetoothClient implements BluetoothNode {
                         activity.setBattleResponseMessage(response);
                     } else if (object instanceof InitMessage) {
 
-                        InitMessage message = (InitMessage) object;
-                        Player clientPlayer = message.getClientPlayer();
-                        Player serverPlayer = message.getServerPlayer();
-
+                        final InitMessage message = (InitMessage) object;
+                        final Player clientPlayer = message.getClientPlayer();
+                        final Player serverPlayer = message.getServerPlayer();
                         messages.add(message.getMessage());
-                        activity.setBattleResponseMessage(message.getMessage());
 
-                        // set name and health of both monsters
-                        if (serverPlayer != null) {
-                            activity.setBattleOpponentName(serverPlayer);
-                            activity.setBattleOpponentHealth(serverPlayer.getActiveMonster());
-                        }
+                        handler.post(new Runnable() {
+                            public void run() {
+                                activity.setBattleResponseMessage(message.getMessage());
 
-                        if (clientPlayer != null) {
-                            activity.setBattlePlayerName(clientPlayer);
-                            activity.setBattlePlayerHealth(clientPlayer.getActiveMonster());
-                        }
+                                // set name and health of both monsters
+                                if (serverPlayer != null) {
+                                    activity.setBattleOpponentName(serverPlayer);
+                                    activity.setBattleOpponentHealth(serverPlayer.getActiveMonster());
+                                }
+
+                                if (clientPlayer != null) {
+                                    activity.setBattlePlayerName(clientPlayer);
+                                    activity.setBattlePlayerHealth(clientPlayer.getActiveMonster());
+                                }
+                            }
+                        });
 
                     } else if (object instanceof BattleMessage) {
 
-                        BattleMessage message = (BattleMessage) object;
+                        final BattleMessage message = (BattleMessage) object;
                         messages.add(message.getMessage());
-                        activity.setBattleResponseMessage(message.getMessage());
 
-                        // change health of monsters
-                        if (message.getServerMonster() != null) {
-                            activity.setBattleOpponentHealth(message.getServerMonster());
-                        }
-                        if (message.getClientMonster() != null) {
-                            activity.setBattlePlayerHealth(message.getClientMonster());
-                        }
+                        handler.post(new Runnable() {
+                            public void run() {
+                                activity.setBattleResponseMessage(message.getMessage());
+
+                                // change health of monsters
+                                if (message.getServerMonster() != null) {
+                                    activity.setBattleOpponentHealth(message.getServerMonster());
+                                }
+                                if (message.getClientMonster() != null) {
+                                    activity.setBattlePlayerHealth(message.getClientMonster());
+                                }
+                            }
+                        });
 
                     } else if (object instanceof ResultMessage) {
 
-                        ResultMessage message = (ResultMessage) object;
+                        final ResultMessage message = (ResultMessage) object;
                         messages.add(message.getMessage());
 
                         // set text on result fragment
-                        ResultFragment fragment= activity.getResultFragment();
-                        fragment.setExp(message.getExpGain());
-                        fragment.setWinner(message.getWinner());
+                        final ResultFragment fragment= activity.getResultFragment();
+                        handler.post(new Runnable() {
+                            public void run() {
+                                fragment.setExp(message.getExpGain());
+                                fragment.setWinner(message.getWinner());
+                            }
+                        });
 
                         // add exp gained to monster
                         Monster minion = activity.getPlayer().getActiveMonster();
