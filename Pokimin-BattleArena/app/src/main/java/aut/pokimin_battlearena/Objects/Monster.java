@@ -14,19 +14,19 @@ import aut.pokimin_battlearena.services.DatabaseController;
  */
 public class Monster implements Serializable {
 
-    public String name = "";
-    public String img = "";
-    public String element = "";
-    public int level = 1;
-    public int exp = 0;
-    public int health = 0;
-    public double defence = 0;
-    public int attack = 0;
-    public int speed = 0;
-    public Skill skill1 = null;
-    public Skill skill2 = null;
-    public Skill skill3 = null;
-    public Skill skill4 = null;
+    private String name = "";
+    private String img = "";
+    private String element = "";
+    private int level = 1;
+    private int exp = 0;
+    private int health = 0;
+    private double defence = 0;
+    private int attack = 0;
+    private int speed = 0;
+    private Skill skill1 = null;
+    private Skill skill2 = null;
+    private Skill skill3 = null;
+    private Skill skill4 = null;
 
     public DatabaseController dbc;
 
@@ -37,6 +37,10 @@ public class Monster implements Serializable {
         dbc.setMonsterCurrentStats(name, this);
 
     }
+
+    //saves the stats of the Current instance of Monster into the databse
+    public void saveMonsterCurrentInfo(){dbc.setMonsterCurrentStats(this.name, this);}
+
 
 
     public void printInfo(){

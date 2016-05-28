@@ -1,5 +1,6 @@
 package aut.pokimin_battlearena.fragments;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -39,6 +41,9 @@ public class BattleFragment extends Fragment {
 
     OnFragmentInteractionListener mListener;
 
+    BluetoothNode bluetoothNode;
+    BattleActivity battleActivity;
+
     TextView message;
     TextView opponent;
     TextView player;
@@ -48,6 +53,8 @@ public class BattleFragment extends Fragment {
     ProgressBar opponentHealth;
     ProgressBar playerHealth;
 
+    Button test;
+
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // FRAGMENT
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -55,6 +62,10 @@ public class BattleFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup,
                              Bundle savedInstanceState) {
+
+        battleActivity = (BattleActivity) getActivity();
+        bluetoothNode = battleActivity.getBluetoothNode();
+
         View view = inflater.inflate(R.layout.fragment_battle, viewGroup, false);
 
         // retrieving views from layout
@@ -64,6 +75,14 @@ public class BattleFragment extends Fragment {
         moveSet  = (GridView) view.findViewById(R.id.move_sets);
         opponentHealth = (ProgressBar) view.findViewById(R.id.opponent_hp);
         playerHealth   = (ProgressBar) view.findViewById(R.id.player_hp);
+
+        test = (Button) view.findViewById(R.id.testButton);
+        test.setOnClickListener(new AdapterView.OnClickListener() {
+            public void onClick(View v) {
+                //when test button is pressed
+                bluetoothNode.forward("test");
+            }
+        });
 
         final BattleActivity activity = (BattleActivity) getActivity();
         Monster minion = activity.getPlayer().getActiveMonster();
@@ -143,6 +162,7 @@ public class BattleFragment extends Fragment {
         }
 
     }
+    
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // CLASS
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -150,4 +170,6 @@ public class BattleFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void onBattleFragmentInteraction();
     }
+
+
 }

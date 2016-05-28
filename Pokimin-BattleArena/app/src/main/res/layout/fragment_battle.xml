@@ -70,4 +70,14 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Test"
+        android:id="@+id/testButton"
+        android:layout_below="@+id/battle_opponent_name"
+        android:layout_alignRight="@+id/battle_player_name"
+        android:layout_alignEnd="@+id/battle_player_name" />
+
 </RelativeLayout>

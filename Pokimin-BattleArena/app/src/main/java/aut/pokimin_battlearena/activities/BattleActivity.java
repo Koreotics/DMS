@@ -51,10 +51,13 @@ public class BattleActivity extends Activity implements Serializable,
     BroadcastReceiver receiver;
     IntentFilter intentFilter;
     BluetoothAdapter adapter;
+
+    // Tristan added this
     BluetoothClient client;
     BluetoothServer server;
 
     Player player;
+    BluetoothNode bluetoothNode;
 
     Button bluetoothButton;
 
@@ -123,6 +126,7 @@ public class BattleActivity extends Activity implements Serializable,
         try {
             if (client != null) { client.stop(); }
             if (server != null) { server.stop(); }
+            if (bluetoothNode != null) { bluetoothNode.stop(); }
             if (receiver != null) { unregisterReceiver(receiver); }
         } catch (IllegalArgumentException ex) {}
 
@@ -135,7 +139,11 @@ public class BattleActivity extends Activity implements Serializable,
     public BattleFragment getBattleFragment() { return battle; }
     public ResultFragment getResultFragment() { return result; }
     public SearchDialog   getSearchDialog()   { return search; }
+
+    // Tristan added this
     public Player         getPlayer()         { return player; }
+
+    public BluetoothNode getBluetoothNode() {return bluetoothNode;}
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // MUTATORS
@@ -157,6 +165,7 @@ public class BattleActivity extends Activity implements Serializable,
 
     // REGISTER BLUETOOTH ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    // Tristan added this
     public void registerClient(BluetoothClient client) { this.client = client; }
     public void registerServer(BluetoothServer server) { this.server = server; }
 
@@ -164,6 +173,8 @@ public class BattleActivity extends Activity implements Serializable,
 
     public void sendActiveSkill(Skill skill) { client.sendActiveSkill(skill); }
     public void sendPlayerInfo()             { client.sendPlayerInfo(); }
+
+    public void registerBluetoothNode(BluetoothNode node) { this.bluetoothNode = node; }
 
     // BLUETOOTH UTILITY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -194,6 +205,7 @@ public class BattleActivity extends Activity implements Serializable,
 
         // enables device to be discoverable
         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,300);
         startActivity(discoverableIntent);
         search.getSearchButton().setVisibility(View.GONE);

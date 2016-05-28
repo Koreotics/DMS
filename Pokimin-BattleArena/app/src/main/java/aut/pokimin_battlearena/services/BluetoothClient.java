@@ -124,6 +124,7 @@ public class BluetoothClient implements BluetoothNode {
 
         if (!devices.isEmpty() && !stopRequest) {
 
+
             handler.post(new Runnable() {
                 public void run() {
                     searchMessage.setText("Devices found! Processing service...");
@@ -135,13 +136,14 @@ public class BluetoothClient implements BluetoothNode {
                 try {
                     socket = device.createRfcommSocketToServiceRecord(BluetoothNode.SERVICE_UUID);
                     socket.connect();
+                    //cancels discover after successful connection
                     adapter.cancelDiscovery();
                 } catch (IOException e) { socket = null;}
 
                 // break off for loop once device with service has been found
                 if (socket != null) { break; }
             }
-
+            //If connection was successful
             if (socket != null) {
 
                 // change to battle fragment
@@ -167,7 +169,7 @@ public class BluetoothClient implements BluetoothNode {
                 while (!stopRequest) {
                     // TODO: start sender thread here
                 }
-            } else {
+            } else { //if connection failed
                 handler.post(new Runnable() {
                     public void run() {
                         searchMessage.setText("Devices do not have service");
@@ -210,7 +212,12 @@ public class BluetoothClient implements BluetoothNode {
     public void stop() {
         stopRequest = true;
 
+
+        if (receiver != null) {
+            receiver = null; }
+
         if (receiver != null) { activity.unregisterReceiver(receiver); }
+
 
         // notify array lists
         synchronized (devices)  { devices.notifyAll(); }
@@ -225,6 +232,7 @@ public class BluetoothClient implements BluetoothNode {
     public void registerActivity(Activity activity) {
         this.activity = (BattleActivity) activity;
         this.activity.registerClient(this);
+        this.activity.registerBluetoothNode(this);
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -400,6 +408,7 @@ public class BluetoothClient implements BluetoothNode {
 
             // discovery completed
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                //Wakes up devices from waiting
                 synchronized (devices) { devices.notifyAll(); }
                 activity.setSearchResponseMessage("Search completed.");
                 activity.showSearchButton();
