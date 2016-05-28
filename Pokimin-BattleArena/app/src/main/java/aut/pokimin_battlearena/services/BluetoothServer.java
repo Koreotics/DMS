@@ -145,6 +145,7 @@ public class BluetoothServer implements BluetoothNode {
 
     @Override
     public void forward(Object message) {
+    public void forward(String message) {
 //        synchronized (messages) {
 //            messages.add(message);
 //            messages.notifyAll();
