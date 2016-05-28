@@ -142,6 +142,8 @@ public class BluetoothClient implements BluetoothNode {
                 transaction.replace(R.id.battle_fragment, activity.getBattleFragment());
                 transaction.commit();
 
+                activity.getSearchDialog().dismiss();
+
                 handler.post(new Runnable() {
                     public void run() {
                         searchMessage.setText("Service found! Starting communication...");
@@ -234,6 +236,9 @@ public class BluetoothClient implements BluetoothNode {
     public void sendMessage(String message) {
         // TODO: send a message to server for debugging purposes
     }
+
+    // POPULATE MOVES GRIDVIEW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // CLASSES

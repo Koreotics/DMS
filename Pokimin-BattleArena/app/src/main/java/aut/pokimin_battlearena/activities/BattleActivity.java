@@ -50,6 +50,8 @@ public class BattleActivity extends Activity implements Serializable,
     BluetoothNode client;
     BluetoothNode server;
 
+    Player player;
+
     Button bluetoothButton;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -128,6 +130,7 @@ public class BattleActivity extends Activity implements Serializable,
 
     public BattleFragment getBattleFragment() { return battle; }
     public SearchDialog   getSearchDialog()   { return search; }
+    public Player         getPlayer()         { return player; }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // MUTATORS

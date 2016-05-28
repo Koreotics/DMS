@@ -60,6 +60,6 @@ public class RegisterDialog extends DialogFragment implements AdapterView.OnClic
         database.createPlayer(name);
 
         Intent intent = new Intent(getActivity(), MainActivity.class);
-        startActivity(intent);
+        startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
     }
 }

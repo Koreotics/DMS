@@ -8,16 +8,22 @@ import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+
 import aut.pokimin_battlearena.Objects.Monster;
 import aut.pokimin_battlearena.Objects.Player;
+import aut.pokimin_battlearena.Objects.Skill;
 import aut.pokimin_battlearena.R;
 import aut.pokimin_battlearena.activities.BattleActivity;
 import aut.pokimin_battlearena.services.BluetoothNode;
+import aut.pokimin_battlearena.utils.MovesAdapter;
 
 
 /**
@@ -37,6 +43,8 @@ public class BattleFragment extends Fragment {
     TextView opponent;
     TextView player;
 
+    GridView moveSet;
+
     ProgressBar opponentHealth;
     ProgressBar playerHealth;
 
@@ -53,8 +61,32 @@ public class BattleFragment extends Fragment {
         opponent = (TextView) view.findViewById(R.id.battle_opponent_name);
         player   = (TextView) view.findViewById(R.id.battle_player_name);
 
+        moveSet = (GridView) view.findViewById(R.id.move_sets);
+
         opponentHealth = (ProgressBar) view.findViewById(R.id.opponent_hp);
         playerHealth   = (ProgressBar) view.findViewById(R.id.player_hp);
+
+        BattleActivity activity = (BattleActivity) getActivity();
+        Monster minion = activity.getPlayer().getActiveMonster();
+
+        ArrayList<Skill> minionMoves = new ArrayList<>();
+
+        minionMoves.add(minion.getSkill1());
+        minionMoves.add(minion.getSkill2());
+        minionMoves.add(minion.getSkill3());
+        minionMoves.add(minion.getSkill4());
+
+        final MovesAdapter adapter = new MovesAdapter(view.getContext(), (Skill[]) minionMoves.toArray());
+        moveSet.setAdapter(adapter);
+
+        moveSet.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Skill selectedMove = (Skill) adapter.getItem(position);
+                // TODO send move to server.
+            }
+        });
 
         return view;
     }
