@@ -107,26 +107,10 @@ public class BluetoothServer implements BluetoothNode  {
                     }
                 });
 
-                // create a thread for the client (message reciever)
-                connectedClient = new ClientHandler(socket);
-                Thread clientThread = new Thread(connectedClient);
-                clientThread.start();
-                // notify activity a client has connected
-                Log.w("ChatServer", "New client connection accepted");
+
 
                 //If connection was successful
                 if (socket != null) {
-                    output = new ObjectOutputStream(socket.getOutputStream());
-                    handler.post(new Runnable() {
-                        public void run() {
-                            searchMessage.setText("Starting Game...");
-                        }
-                    });
-
-                    //Starts sender thread
-                    MessageSender sender = new MessageSender();
-                    Thread senderThread = new Thread(sender);
-                    senderThread.start();
 
                     // change to battle fragment
                     FragmentManager manager = battleActivity.getFragmentManager();
@@ -134,6 +118,28 @@ public class BluetoothServer implements BluetoothNode  {
                     transaction.replace(R.id.battle_fragment, battleActivity.getBattleFragment());
                     transaction.commit();
                     battleActivity.getSearchDialog().dismiss();
+
+
+                    output = new ObjectOutputStream(socket.getOutputStream());
+                    handler.post(new Runnable() {
+                        public void run() {
+                            searchMessage.setText("Starting Game...");
+                        }
+                    });
+
+                    // create a thread for the client (message reciever)
+                    connectedClient = new ClientHandler(socket);
+                    Thread clientThread = new Thread(connectedClient);
+                    clientThread.start();
+                    // notify activity a client has connected
+                    Log.w("ChatServer", "New client connection accepted");
+
+                    //Starts sender thread
+                    MessageSender sender = new MessageSender();
+                    Thread senderThread = new Thread(sender);
+                    senderThread.start();
+
+
                 }
 
 
