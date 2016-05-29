@@ -26,6 +26,7 @@ import aut.pokimin_battlearena.dialogs.SearchDialog;
 import aut.pokimin_battlearena.services.BluetoothClient;
 import aut.pokimin_battlearena.services.BluetoothNode;
 import aut.pokimin_battlearena.services.BluetoothServer;
+import aut.pokimin_battlearena.services.DatabaseController;
 
 /**
  * @author Tristan Borja (1322097)
@@ -60,7 +61,7 @@ public class BattleActivity extends Activity implements Serializable,
     BluetoothNode bluetoothNode;
 
     Button bluetoothButton;
-    Player myPlayer;
+    DatabaseController dbc;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // ACTIVITY
@@ -73,6 +74,11 @@ public class BattleActivity extends Activity implements Serializable,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_battle);
 
+//        Intent intent = this.getIntent();
+//        Serializable s = intent.getSerializableExtra("player");
+//        player = (Player) s;
+        dbc = new DatabaseController(this);
+        player = new Player(this, dbc.getPlayerName());
         if (savedInstanceState == null) {
 
             // create instance of the fragments
@@ -89,6 +95,7 @@ public class BattleActivity extends Activity implements Serializable,
             FragmentManager     manager     = this.getFragmentManager();
             FragmentTransaction transaction = manager.beginTransaction();
 
+
             // present the fragments into the screen
             switch (getIntent().getIntExtra("fragmentID", 0)) {
                 case (SEARCH_FRAGMENT): search.show(manager, "Search"); break;
@@ -98,8 +105,9 @@ public class BattleActivity extends Activity implements Serializable,
 
             // finalise fragment transaction
             transaction.commit();
+
         }
-        myPlayer = (Player) getIntent().getSerializableExtra("player");
+
     }
 
     @Override
@@ -173,8 +181,8 @@ public class BattleActivity extends Activity implements Serializable,
 
     // SENDING CLIENT MESSAGES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    public void sendActiveSkill(Skill skill) { client.sendActiveSkill(skill); }
-    public void sendPlayerInfo()             { client.sendPlayerInfo(); }
+    public void sendActiveSkill(Skill skill) { this.bluetoothNode.sendActiveSkill(skill); }
+    public void sendPlayerInfo()             { this.bluetoothNode.sendPlayerInfo(); }
 
     public void registerBluetoothNode(BluetoothNode node) { this.bluetoothNode = node; }
 

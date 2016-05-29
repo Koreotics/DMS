@@ -57,7 +57,7 @@ public class MovesAdapter extends BaseAdapter {
 
             moveName.setText(moveSet[position].getName());
             moveType.setText(moveSet[position].getType());
-            moveCount.setText(moveSet[position].getName());
+            moveCount.setText(moveSet[position].getMaxPP()+"");
         } else { view = (View) convertView; }
 
         return view;

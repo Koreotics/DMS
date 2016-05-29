@@ -3,6 +3,8 @@ package aut.pokimin_battlearena.Objects;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.Serializable;
+
 import aut.pokimin_battlearena.services.DatabaseController;
 
 /**
@@ -10,7 +12,7 @@ import aut.pokimin_battlearena.services.DatabaseController;
  * @author Dominic Yuen  (1324837)
  * @author Gierdino Julian Santoso (15894898)
  */
-public class Skill {
+public class Skill implements Serializable{
 
     private String name = "";
     private String type = "";

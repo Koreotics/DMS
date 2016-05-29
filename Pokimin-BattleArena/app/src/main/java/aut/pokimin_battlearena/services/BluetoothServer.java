@@ -21,18 +21,23 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import aut.pokimin_battlearena.Objects.Message.BattleMessage;
 import aut.pokimin_battlearena.Objects.Message.InitMessage;
+import aut.pokimin_battlearena.Objects.Message.ResultMessage;
+import aut.pokimin_battlearena.Objects.Message.SkillMessage;
 import aut.pokimin_battlearena.Objects.Monster;
 import aut.pokimin_battlearena.Objects.Player;
+import aut.pokimin_battlearena.Objects.Skill;
 import aut.pokimin_battlearena.R;
 import aut.pokimin_battlearena.activities.BattleActivity;
+import aut.pokimin_battlearena.fragments.ResultFragment;
 
 /**
  * @author Tristan Borja (1322097)
  * @author Dominic Yuen  (1324837)
  * @author Gierdino Julian Santoso (15894898)
  */
-public class BluetoothServer implements BluetoothNode {
+public class BluetoothServer implements BluetoothNode  {
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // FIELDS
@@ -48,6 +53,7 @@ public class BluetoothServer implements BluetoothNode {
 
     Handler handler;
     TextView searchMessage;
+    private ObjectOutputStream output;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // CONSTRUCTOR
@@ -57,7 +63,7 @@ public class BluetoothServer implements BluetoothNode {
         connectedClient = null;
         messages        = new ArrayList<>();
         battleActivity  = null;
-
+        output          = null;
 
         stopRequest = false;
         handler = new Handler();
@@ -110,7 +116,7 @@ public class BluetoothServer implements BluetoothNode {
 
                 //If connection was successful
                 if (socket != null) {
-
+                    output = new ObjectOutputStream(socket.getOutputStream());
                     handler.post(new Runnable() {
                         public void run() {
                             searchMessage.setText("Starting Game...");
@@ -127,6 +133,7 @@ public class BluetoothServer implements BluetoothNode {
                     FragmentTransaction transaction = manager.beginTransaction();
                     transaction.replace(R.id.battle_fragment, battleActivity.getBattleFragment());
                     transaction.commit();
+                    battleActivity.getSearchDialog().dismiss();
                 }
 
 
@@ -144,7 +151,6 @@ public class BluetoothServer implements BluetoothNode {
     }
 
     @Override
-    public void forward(Object message) {
     public void forward(String message) {
 //        synchronized (messages) {
 //            messages.add(message);
@@ -168,6 +174,7 @@ public class BluetoothServer implements BluetoothNode {
         connectedClient.closeConnection();
     }
 
+
     @Override
     public void registerActivity(Activity activity) {
         this.battleActivity = (BattleActivity) activity;
@@ -175,11 +182,43 @@ public class BluetoothServer implements BluetoothNode {
     }
 
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // UTILITY
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+    // SENDING MESSAGES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public void sendPlayerInfo() {
+
+        try {
+            String message = "client has connected";
+            InitMessage initMessage = new InitMessage(message, battleActivity.getPlayer(), null );
+//            output.writeObject(initMessage);
+            connectedClient.send(initMessage);
+        } catch (IOException e) {
+            System.err.println("Unable to send the player to the server: " + e);
+        }
+    }
+
+    public void sendActiveSkill(Skill skill) {
+
+        try {
+            Monster monster = battleActivity.getPlayer().getActiveMonster();
+            String message = monster.getName() + " has used to skill " + skill;
+
+            SkillMessage skillMessage = new SkillMessage(message,  monster, skill, null, null);
+            //output.writeObject(skillMessage);
+            connectedClient.send(skillMessage);
+
+        } catch (IOException e) {
+            System.err.println("Unable to send selected skill to the server: " + e);
+        }
+    }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    // CLASSes
+    // CLASSES
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
     //handles recieving messages
     private class ClientHandler implements Runnable {
@@ -188,44 +227,111 @@ public class BluetoothServer implements BluetoothNode {
         private ObjectInputStream input;
         private ObjectOutputStream output;
 
+        // CONSTRUCTOR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         public ClientHandler(BluetoothSocket socket) {
              this.socket = socket;
             try {
                 output = new ObjectOutputStream(socket.getOutputStream());
+                input = new  ObjectInputStream(socket.getInputStream());
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.e("Stream Output error", e.toString());
             }
         }
 
+        // RUNNABLE ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         // repeatedly listens for incoming messages
         public void run() {
             try {
-                input = new  ObjectInputStream(socket.getInputStream());
+
                 // loop until the connection closes or stop requested
                 while (!stopRequest) {
-                    Object message = input.readObject(); // blocking
+                    Object object = input.readObject(); // blocking
 
 
-                    //TODO change, after implementing message classes and add appropriate actions
-                    if (message instanceof String) {
-                        String response = (String) message;
+                    if (object instanceof String) {
+                        final String response = (String) object;
                         messages.add(response);
-                        battleActivity.setBattleResponseMessage(response);
-                    } else if (message instanceof Player) {
-                        // TODO: set your opponent's information here
-                        Player player = (Player) message;
-                        battleActivity.setBattleOpponentName(player);
-                    } else if (message instanceof Monster) {
-                        // TODO: set your opponent's minion stats here
-                        Monster monster = (Monster) message;
-                        battleActivity.setBattleOpponentHealth(monster);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                battleActivity.setBattleResponseMessage(response);
+                            }
+                        });
+
+                    } else if (object instanceof InitMessage) {
+
+                        final InitMessage message = (InitMessage) object;
+                        final Player clientPlayer = message.getClientPlayer();
+                        final Player serverPlayer = battleActivity.getPlayer();
+                        messages.add(message.getMessage());
+
+                        handler.post(new Runnable() {
+                            public void run() {
+                                battleActivity.setBattleResponseMessage(message.getMessage());
+
+                                // set name and health of both monsters
+                                if (serverPlayer != null) {
+                                    battleActivity.setBattleOpponentName(serverPlayer);
+                                    battleActivity.setBattleOpponentHealth(serverPlayer.getActiveMonster());
+                                }
+
+                                if (clientPlayer != null) {
+                                    battleActivity.setBattlePlayerName(clientPlayer);
+                                    battleActivity.setBattlePlayerHealth(clientPlayer.getActiveMonster());
+                                }
+                            }
+                        });
+
+                    } else if (object instanceof BattleMessage) {
+
+                        final BattleMessage message = (BattleMessage) object;
+                        messages.add(message.getMessage());
+
+                        handler.post(new Runnable() {
+                            public void run() {
+                                battleActivity.setBattleResponseMessage(message.getMessage());
+
+                                // change health of monsters
+                                if (message.getServerMonster() != null) {
+                                    battleActivity.setBattleOpponentHealth(message.getServerMonster());
+                                }
+                                if (message.getClientMonster() != null) {
+                                    battleActivity.setBattlePlayerHealth(message.getClientMonster());
+                                }
+                            }
+                        });
+
+                    } else if (object instanceof ResultMessage) {
+
+                        final ResultMessage message = (ResultMessage) object;
+                        messages.add(message.getMessage());
+
+                        // set text on result fragment
+                        final ResultFragment fragment= battleActivity.getResultFragment();
+                        handler.post(new Runnable() {
+                            public void run() {
+                                fragment.setExp(message.getExpGain());
+                                fragment.setWinner(message.getWinner());
+                            }
+                        });
+
+                        // add exp gained to monster
+                        Monster minion = battleActivity.getPlayer().getActiveMonster();
+                        minion.setExp(minion.getExp() + message.getExpGain());
+
+                        // transact to result fragment
+                        FragmentManager manager = battleActivity.getFragmentManager();
+                        FragmentTransaction transaction = manager.beginTransaction();
+                        transaction.replace(R.id.battle_fragment, fragment);
+                        transaction.commit();
+
                     }
                 }
             } catch (IOException e) {
                 battleActivity.setBattleResponseMessage("SERVER: Opponent disconnecting");
                 Log.w("ChatServer", "Client Disconnecting");
-            } catch (ClassNotFoundException e) {
+         } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
 
@@ -270,16 +376,17 @@ public class BluetoothServer implements BluetoothNode {
 //            if (battleActivity != null)
 //                battleActivity.showReceivedMessage("RECEIVED: "+message);
             // pass message to all clients
-            try
-            {  connectedClient.send(new InitMessage("yoyo", new Player(this, )));
+           // try
+            //{
+                sendPlayerInfo();
                 //battleActivity.setBattleResponseMessage("Sent Message: yoyo" );
                 Log.d("Sending message: ", "from Server");
 
-            }
-            catch (IOException e)
-            {
-                Log.e("Server", "Message failed to send: " + e);
-            }
+          //  }
+//            catch (IOException e)
+//            {
+//                Log.e("Server", "Message failed to send: " + e);
+//            }
         //}
         }
         }

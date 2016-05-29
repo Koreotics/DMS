@@ -99,7 +99,8 @@ public class BattleFragment extends Fragment {
         playerHealth.setProgress(minion.getHealth());
 
         // setting moves within moveSet
-        final MovesAdapter adapter = new MovesAdapter(view.getContext(), (Skill[]) minionMoves.toArray());
+        Skill[] skills =  minionMoves.toArray(new Skill[minionMoves.size()]);
+        final MovesAdapter adapter = new MovesAdapter(view.getContext(), skills);
         moveSet.setAdapter(adapter);
         moveSet.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 

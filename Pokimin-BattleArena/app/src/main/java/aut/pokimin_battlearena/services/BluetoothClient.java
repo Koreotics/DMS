@@ -301,13 +301,19 @@ public class BluetoothClient implements BluetoothNode {
                     Object object = input.readObject();
 
                     if (object instanceof String) {
-                        String response = (String) object;
+                        final String response = (String) object;
                         messages.add(response);
-                        activity.setBattleResponseMessage(response);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                activity.setBattleResponseMessage(response);
+                            }
+                        });
+
                     } else if (object instanceof InitMessage) {
 
                         final InitMessage message = (InitMessage) object;
-                        final Player clientPlayer = message.getClientPlayer();
+                        final Player clientPlayer = activity.getPlayer();
                         final Player serverPlayer = message.getServerPlayer();
                         messages.add(message.getMessage());
 

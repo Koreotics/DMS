@@ -5,6 +5,8 @@ import android.app.Activity;
 import java.io.Serializable;
 import java.util.UUID;
 
+import aut.pokimin_battlearena.Objects.Skill;
+
 /**
  * @author Tristan Borja (1322097)
  * @author Dominic Yuen  (1324837)
@@ -26,11 +28,14 @@ public interface BluetoothNode extends Runnable, Serializable {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     // forward a message to all chat nodes in the Bluetooth network
-    public void forward(Object message);
+
     public void forward(String message);
     // stop this chat node and clean up
     public void stop();
     // registers or unregisters (if null) a ChatActivity for display
     public void registerActivity(Activity activity);
 
+    public void sendActiveSkill(Skill skill);
+
+    public void sendPlayerInfo();
 }

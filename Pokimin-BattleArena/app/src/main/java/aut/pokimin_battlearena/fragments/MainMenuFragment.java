@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import aut.pokimin_battlearena.Objects.Player;
 import aut.pokimin_battlearena.R;
 import aut.pokimin_battlearena.activities.BattleActivity;
 import aut.pokimin_battlearena.activities.MainActivity;
@@ -78,8 +79,9 @@ public class MainMenuFragment extends ListFragment implements AdapterView.OnItem
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Activity activity = getActivity();
-        Intent intent = new Intent(getActivity(), MainActivity.class);
 
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        Player player = ((MainActivity)activity).getMyPlayer();
         // Creating content for intent
         switch (position) {
             case 0: intent = new Intent(activity, PlayerActivity.class); break;
@@ -87,6 +89,7 @@ public class MainMenuFragment extends ListFragment implements AdapterView.OnItem
             case 2:
                 intent.putExtra("fragmentID", 0);
                 intent = new Intent(activity, BattleActivity.class);
+//                intent.putExtra("player", player);
                 break;
         }
 

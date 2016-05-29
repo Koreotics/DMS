@@ -85,7 +85,6 @@ public class MainActivity extends Activity implements
             case 1: intent = new Intent(this, MinionActivity.class); break;
             case 2:
                 intent.putExtra("fragmentID", 0);
-                intent.putExtra("player", getMyPlayer());
                 intent = new Intent(this, BattleActivity.class);
                 break;
         }
