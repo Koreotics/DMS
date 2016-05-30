@@ -392,7 +392,7 @@ public class BluetoothServer implements BluetoothNode  {
             InitMessage initMessage = new InitMessage(message, battleActivity.getPlayer().getName(),
                     battleActivity.getPlayer().getActiveMonster().getPassableMonsterInfo(), null, null );
 //           / /ArrayList<String> arrayList = new ArrayList<>();
-//            arrayList.add(battleActivity.getPlayer().getName());h
+//            arrayList.add(battleActivity.getPlayer().getName());
 
             connectedClient.send(initMessage);
 //            }

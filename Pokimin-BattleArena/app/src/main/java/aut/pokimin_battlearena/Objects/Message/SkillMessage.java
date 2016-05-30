@@ -1,7 +1,11 @@
 package aut.pokimin_battlearena.Objects.Message;
 
+import java.util.HashMap;
+
+
 
 import java.util.HashMap;
+
 
 import aut.pokimin_battlearena.Objects.Player;
 import aut.pokimin_battlearena.Objects.Skill;
@@ -28,6 +32,7 @@ public class SkillMessage extends AbstractMessage {
         this.clientSkill = clientSkill;
     }
 
+
     public HashMap<String, String> getServerMonster() { return serverMonster; }
     public HashMap<String, String> getClientMonster() { return clientMonster; }
     public HashMap<String, String>    getServerSkill()   { return serverSkill; }
@@ -37,4 +42,5 @@ public class SkillMessage extends AbstractMessage {
     public void setClientMonster(HashMap<String, String> monster) { clientMonster = monster; }
     public void setServerSkill(HashMap<String, String>  skill)       { serverSkill = skill; }
     public void setClientSkill(HashMap<String, String>  skill)       { clientSkill = skill; }
+
 }
