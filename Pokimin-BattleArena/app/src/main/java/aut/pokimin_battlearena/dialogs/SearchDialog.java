@@ -106,7 +106,7 @@ public class SearchDialog extends DialogFragment implements AdapterView.OnClickL
             activity.configBluetooth();
             search.setVisibility(View.GONE);
 
-            BluetoothNode client = new BluetoothClient();
+            BluetoothNode client = new BluetoothClient(this.getActivity());
             client.registerActivity(activity);
 
             clientThread = new Thread(client);
@@ -128,7 +128,7 @@ public class SearchDialog extends DialogFragment implements AdapterView.OnClickL
             intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
             startActivity(intent);
 
-            BluetoothNode server = new BluetoothServer();
+            BluetoothNode server = new BluetoothServer(this.getActivity());
             server.registerActivity(activity);
             serverThread = new Thread(server);
             serverThread.start();

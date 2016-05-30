@@ -33,7 +33,7 @@ public class Skill implements Serializable{
     public Skill(HashMap<String, String> map){
         setName(map.get("name"));
         setType(map.get("type"));
-        setMultiply(Integer.parseInt(map.get("multiply")));
+        setMultiply(Double.parseDouble(map.get("multiply")));
         setMaxPP(Integer.parseInt(map.get("maxPP")));
         setSpeed(Integer.parseInt(map.get("speed")));
 

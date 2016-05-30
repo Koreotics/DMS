@@ -1,6 +1,8 @@
 package aut.pokimin_battlearena.Objects.Message;
 
-import aut.pokimin_battlearena.Objects.Monster;
+import java.util.HashMap;
+
+
 import aut.pokimin_battlearena.Objects.Player;
 
 /**
@@ -10,18 +12,18 @@ import aut.pokimin_battlearena.Objects.Player;
  */
 public class BattleMessage extends AbstractMessage {
 
-    private Monster serverMonster;
-    private Monster clientMonster;
+    private HashMap<String, String>  serverMonster;
+    private HashMap<String, String>  clientMonster;
 
-    public BattleMessage(String message, Monster serverMonster, Monster clientMonster) {
+    public BattleMessage(String message, HashMap<String, String> serverMonster, HashMap<String, String>  clientMonster) {
         super(message);
         this.serverMonster = serverMonster;
         this.clientMonster = clientMonster;
     }
 
-    public Monster getClientMonster() {return clientMonster;}
-    public Monster getServerMonster() {return serverMonster;}
+    public HashMap<String, String>  getClientMonster() {return clientMonster;}
+    public HashMap<String, String>  getServerMonster() {return serverMonster;}
 
-    public void setClientMonster(Monster clientMonster) {this.clientMonster = clientMonster;}
-    public void setServerMonster(Monster serverMonster) {this.serverMonster = serverMonster;}
+    public void setClientMonster(HashMap<String, String>  clientMonster) {this.clientMonster = clientMonster;}
+    public void setServerMonster(HashMap<String, String>  serverMonster) {this.serverMonster = serverMonster;}
 }

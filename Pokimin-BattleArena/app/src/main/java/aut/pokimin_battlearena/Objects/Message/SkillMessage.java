@@ -1,6 +1,12 @@
 package aut.pokimin_battlearena.Objects.Message;
 
-import aut.pokimin_battlearena.Objects.Monster;
+import java.util.HashMap;
+
+
+
+import java.util.HashMap;
+
+
 import aut.pokimin_battlearena.Objects.Player;
 import aut.pokimin_battlearena.Objects.Skill;
 
@@ -9,14 +15,14 @@ import aut.pokimin_battlearena.Objects.Skill;
  */
 public class SkillMessage extends AbstractMessage {
 
-    private Monster serverMonster;
-    private Monster clientMonster;
+    private HashMap<String, String> serverMonster;
+    private HashMap<String, String> clientMonster;
 
-    private Skill serverSkill;
-    private Skill clientSkill;
+    private HashMap<String, String> serverSkill;
+    private HashMap<String, String> clientSkill;
 
-    public SkillMessage(String message, Monster serverMonster, Skill serverSkill,
-                        Monster clientMonster, Skill clientSkill) {
+    public SkillMessage(String message, HashMap<String, String> serverMonster, HashMap<String, String> serverSkill,
+                        HashMap<String, String> clientMonster, HashMap<String, String> clientSkill) {
         super(message);
 
         this.serverMonster = serverMonster;
@@ -26,13 +32,15 @@ public class SkillMessage extends AbstractMessage {
         this.clientSkill = clientSkill;
     }
 
-    public Monster getServerMonster() { return serverMonster; }
-    public Monster getClientMonster() { return clientMonster; }
-    public Skill   getServerSkill()   { return serverSkill; }
-    public Skill   getClientSkill()   { return clientSkill; }
 
-    public void setServerMonster(Monster monster) { serverMonster = monster; }
-    public void setClientMonster(Monster monster) { clientMonster = monster; }
-    public void setServerSkill(Skill skill)       { serverSkill = skill; }
-    public void setClientSkill(Skill skill)       { clientSkill = skill; }
+    public HashMap<String, String> getServerMonster() { return serverMonster; }
+    public HashMap<String, String> getClientMonster() { return clientMonster; }
+    public HashMap<String, String>    getServerSkill()   { return serverSkill; }
+    public HashMap<String, String>    getClientSkill()   { return clientSkill; }
+
+    public void setServerMonster(HashMap<String, String> monster) { serverMonster = monster; }
+    public void setClientMonster(HashMap<String, String> monster) { clientMonster = monster; }
+    public void setServerSkill(HashMap<String, String>  skill)       { serverSkill = skill; }
+    public void setClientSkill(HashMap<String, String>  skill)       { clientSkill = skill; }
+
 }

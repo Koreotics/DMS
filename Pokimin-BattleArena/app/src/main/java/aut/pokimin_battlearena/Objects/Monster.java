@@ -47,7 +47,7 @@ public class Monster implements Serializable {
         setLevel(Integer.parseInt(monsterStats.get("level")));
         setExp(Integer.parseInt(monsterStats.get("exp")));
         setHealth(Integer.parseInt(monsterStats.get("health")));
-        setDefence(Integer.parseInt(monsterStats.get("defence")));
+        setDefence(Double.parseDouble(monsterStats.get("defence")));
         setAttack(Integer.parseInt(monsterStats.get("attack")));
         setSpeed(Integer.parseInt(monsterStats.get("speed")));
 

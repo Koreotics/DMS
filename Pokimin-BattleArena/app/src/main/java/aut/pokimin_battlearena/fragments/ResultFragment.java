@@ -97,7 +97,7 @@ public class ResultFragment extends Fragment {
     // ACCESSOR
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    public void setWinner(Player player) { winner.setText(player.getName() + " is Victorious!"); }
+    public void setWinner(String player) { winner.setText(player + " is Victorious!"); }
     public void setExp(int exp)          { this.exp.setText("You have gained: " + exp + " exp..." ); }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
