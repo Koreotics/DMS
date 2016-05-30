@@ -76,6 +76,7 @@ public class BattleFragment extends Fragment {
         opponentHealth = (ProgressBar) view.findViewById(R.id.opponent_hp);
         playerHealth   = (ProgressBar) view.findViewById(R.id.player_hp);
 
+        playerHealth.setMax(battleActivity.getPlayer().getActiveMonster().getHealth());
         test = (Button) view.findViewById(R.id.testButton);
         test.setOnClickListener(new AdapterView.OnClickListener() {
             public void onClick(View v) {
@@ -85,7 +86,8 @@ public class BattleFragment extends Fragment {
         });
 
         final BattleActivity activity = (BattleActivity) getActivity();
-        Monster minion = activity.getPlayer().getActiveMonster();
+        Player player1 = activity.getPlayer();
+        Monster minion = player1.getActiveMonster();
 
         ArrayList<Skill> minionMoves = new ArrayList<>();
 
