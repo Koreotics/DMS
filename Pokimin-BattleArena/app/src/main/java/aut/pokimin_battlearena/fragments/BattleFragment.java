@@ -99,7 +99,8 @@ public class BattleFragment extends Fragment {
         playerHealth.setProgress(minion.getHealth());
 
         // setting moves within moveSet
-        final MovesAdapter adapter = new MovesAdapter(view.getContext(), (Skill[]) minionMoves.toArray());
+        Skill[] skills =  minionMoves.toArray(new Skill[minionMoves.size()]);
+        final MovesAdapter adapter = new MovesAdapter(view.getContext(), skills);
         moveSet.setAdapter(adapter);
         moveSet.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -135,8 +136,8 @@ public class BattleFragment extends Fragment {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     public void setMessage(String message)         { this.message.setText(message); }
-    public void setOpponentName(Player player)     { this.opponent.setText(player.getName()); }
-    public void setPlayerName(Player player)       { this.player.setText(player.getName()); }
+    public void setOpponentName(String player)     { this.opponent.setText(player); }
+    public void setPlayerName(String player)       { this.player.setText(player); }
     public void setOpponentHealth(Monster monster) { this.opponentHealth.setProgress(monster.getHealth()); }
     public void setPlayerHealth(Monster monster)   { this.playerHealth.setProgress(monster.getHealth()); }
 

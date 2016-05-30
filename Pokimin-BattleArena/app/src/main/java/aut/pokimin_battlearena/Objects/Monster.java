@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import aut.pokimin_battlearena.services.DatabaseController;
 
@@ -14,6 +15,7 @@ import aut.pokimin_battlearena.services.DatabaseController;
  */
 public class Monster implements Serializable {
 
+    private static final long serialVersionUID = 1;
     private String name = "";
     private String img = "";
     private String element = "";
@@ -28,13 +30,31 @@ public class Monster implements Serializable {
     private Skill skill3 = null;
     private Skill skill4 = null;
 
-    public DatabaseController dbc;
+    private DatabaseController dbc;
 
     public Monster(Context context, String name){
         dbc = new DatabaseController(context);
         this.name = name;
         dbc.setMonsterStandardInfo(context, name, this);
         dbc.setMonsterCurrentStats(name, this);
+
+    }
+
+    public Monster(Context context, HashMap<String, String> monsterStats){
+        setName(monsterStats.get("name"));
+        setImg(monsterStats.get("img"));
+        setElement(monsterStats.get("element"));
+        setLevel(Integer.parseInt(monsterStats.get("level")));
+        setExp(Integer.parseInt(monsterStats.get("exp")));
+        setHealth(Integer.parseInt(monsterStats.get("health")));
+        setDefence(Integer.parseInt(monsterStats.get("defence")));
+        setAttack(Integer.parseInt(monsterStats.get("attack")));
+        setSpeed(Integer.parseInt(monsterStats.get("speed")));
+
+        setSkill1(new Skill(context, monsterStats.get("Skill1")));
+        setSkill2(new Skill(context, monsterStats.get("Skill2")));
+        setSkill3(new Skill(context, monsterStats.get("Skill3")));
+        setSkill4(new Skill(context, monsterStats.get("Skill4")));
 
     }
 
@@ -56,6 +76,26 @@ public class Monster implements Serializable {
         skill2.printSkillInfo();
         skill3.printSkillInfo();
         skill4.printSkillInfo();
+    }
+
+    public HashMap<String, String> getPassableMonsterInfo(){
+        HashMap<String, String> monsterInfo = new HashMap<>();
+
+        monsterInfo.put("name", this.getName());
+        monsterInfo.put("img", getImg());
+        monsterInfo.put("element", getElement());
+        monsterInfo.put("level", getLevel()+"");
+        monsterInfo.put("exp", getExp()+"");
+        monsterInfo.put("health", getHealth()+"");
+        monsterInfo.put("defence", getDefence()+"");
+        monsterInfo.put("attack", getAttack()+"");
+        monsterInfo.put("speed", getSpeed()+"");
+        monsterInfo.put("skill1", getSkill1().getName());
+        monsterInfo.put("skill2", getSkill2().getName());
+        monsterInfo.put("skill3", getSkill3().getName());
+        monsterInfo.put("skill4", getSkill4().getName());
+        return monsterInfo;
+
     }
 
     //----------------------------------------------------------------------------------------------
@@ -88,4 +128,8 @@ public class Monster implements Serializable {
     public void setSkill2(Skill skill2) {this.skill2 = skill2;}
     public void setSkill3(Skill skill3) {this.skill3 = skill3;}
     public void setSkill4(Skill skill4) {this.skill4 = skill4;}
+
+    public void setDbc(DatabaseController dbc) {
+        this.dbc = dbc;
+    }
 }
