@@ -161,8 +161,8 @@ public class BattleActivity extends Activity implements Serializable,
 
     public void setSearchResponseMessage(String message) { search.setMessage(message); }
     public void setBattleResponseMessage(String message) { battle.setMessage(message);}
-    public void setBattlePlayerName(Player player)       { battle.setPlayerName(player); }
-    public void setBattleOpponentName(Player player)     { battle.setOpponentName(player); }
+    public void setBattlePlayerName(String player)       { battle.setPlayerName(player); }
+    public void setBattleOpponentName(String player)     { battle.setOpponentName(player); }
     public void setBattlePlayerHealth(Monster monster)   { battle.setPlayerHealth(monster); }
     public void setBattleOpponentHealth(Monster monster) { battle.setOpponentHealth(monster); }
 

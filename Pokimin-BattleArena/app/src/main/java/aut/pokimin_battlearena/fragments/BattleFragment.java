@@ -136,8 +136,8 @@ public class BattleFragment extends Fragment {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     public void setMessage(String message)         { this.message.setText(message); }
-    public void setOpponentName(Player player)     { this.opponent.setText(player.getName()); }
-    public void setPlayerName(Player player)       { this.player.setText(player.getName()); }
+    public void setOpponentName(String player)     { this.opponent.setText(player); }
+    public void setPlayerName(String player)       { this.player.setText(player); }
     public void setOpponentHealth(Monster monster) { this.opponentHealth.setProgress(monster.getHealth()); }
     public void setPlayerHealth(Monster monster)   { this.playerHealth.setProgress(monster.getHealth()); }
 

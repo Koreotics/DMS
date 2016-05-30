@@ -243,15 +243,15 @@ public class BluetoothClient implements BluetoothNode {
     // SENDING MESSAGES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     public void sendPlayerInfo() {
-        ObjectOutputStream output = connection.output;
-
-        try {
-            String message = "client has connected";
-            InitMessage initMessage = new InitMessage(message, null, activity.getPlayer());
-            output.writeObject(initMessage);
-        } catch (IOException e) {
-            System.err.println("Unable to send the player to the server: " + e);
-        }
+//        ObjectOutputStream output = connection.output;
+//
+//        try {
+//            String message = "client has connected";
+//            InitMessage initMessage = new InitMessage(message, null, activity.getPlayer());
+//            output.writeObject(initMessage);
+//        } catch (IOException e) {
+//            System.err.println("Unable to send the player to the server: " + e);
+//        }
     }
 
     public void sendActiveSkill(Skill skill) {
@@ -328,8 +328,8 @@ public class BluetoothClient implements BluetoothNode {
                     } else if (object instanceof InitMessage) {
 
                         final InitMessage message = (InitMessage) object;
-                        final Player clientPlayer = activity.getPlayer();
-                        final Player serverPlayer = message.getServerPlayer();
+                        final String clientPlayer = activity.getPlayer().getName();
+                        final String serverPlayer = message.getServerPlayerName();
                         messages.add(message.getMessage());
 
                         handler.post(new Runnable() {
@@ -339,12 +339,12 @@ public class BluetoothClient implements BluetoothNode {
                                 // set name and health of both monsters
                                 if (serverPlayer != null) {
                                     activity.setBattleOpponentName(serverPlayer);
-                                    activity.setBattleOpponentHealth(serverPlayer.getActiveMonster());
+//                                    activity.setBattleOpponentHealth(serverPlayer.getActiveMonster());
                                 }
 
                                 if (clientPlayer != null) {
                                     activity.setBattlePlayerName(clientPlayer);
-                                    activity.setBattlePlayerHealth(clientPlayer.getActiveMonster());
+//                                    activity.setBattlePlayerHealth(clientPlayer.getActiveMonster());
                                 }
                             }
                         });

@@ -198,9 +198,9 @@ public class BluetoothServer implements BluetoothNode  {
 
       //  try {
             String message = "client has connected";
-            InitMessage initMessage = new InitMessage(message, battleActivity.getPlayer(), null );
+            //InitMessage initMessage = new InitMessage(message, battleActivity.getPlayer(), null );
 
-            connectedClient.send(initMessage);
+            //connectedClient.send(initMessage);
 /////       }
 // catch (IOException e) {
 //            System.err.println("Unable to send the player to the server: " + e);
@@ -268,7 +268,7 @@ public class BluetoothServer implements BluetoothNode  {
                     } else if (object instanceof InitMessage) {
 
                         final InitMessage message = (InitMessage) object;
-                        final Player clientPlayer = message.getClientPlayer();
+                        final String clientPlayer = message.getClientPlayerName();
                         final Player serverPlayer = battleActivity.getPlayer();
                         messages.add(message.getMessage());
 
@@ -278,13 +278,13 @@ public class BluetoothServer implements BluetoothNode  {
 
                                 // set name and health of both monsters
                                 if (serverPlayer != null) {
-                                    battleActivity.setBattleOpponentName(serverPlayer);
+                                    battleActivity.setBattleOpponentName(serverPlayer.getName());
                                     battleActivity.setBattleOpponentHealth(serverPlayer.getActiveMonster());
                                 }
 
                                 if (clientPlayer != null) {
                                     battleActivity.setBattlePlayerName(clientPlayer);
-                                    battleActivity.setBattlePlayerHealth(clientPlayer.getActiveMonster());
+//                                    battleActivity.setBattlePlayerHealth(clientPlayer.getActiveMonster());
                                 }
                             }
                         });
