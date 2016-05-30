@@ -140,7 +140,7 @@ public class BluetoothServer implements BluetoothNode  {
                     Thread senderThread = new Thread(sender);
                     senderThread.start();
 
-
+                    sendPlayerInfo();
                 }
 
 
@@ -198,7 +198,7 @@ public class BluetoothServer implements BluetoothNode  {
     public void sendPlayerInfo() {
 
 //        try {
-            String message = "client has connected";
+            String message = "Battle Start!";
             InitMessage initMessage = new InitMessage(message, battleActivity.getPlayer().getName(),
                     battleActivity.getPlayer().getActiveMonster().getPassableMonsterInfo(), null, null  );
 
@@ -284,12 +284,14 @@ public class BluetoothServer implements BluetoothNode  {
                                 // set name and health of both monsters
                                 if (clientPlayer != null) {
                                     battleActivity.setBattleOpponentName(clientPlayer);
-                                    battleActivity.setBattleOpponentHealth(serverPlayer.getActiveMonster());
+                                    battleActivity.setMaxOpponentHealth(clientMonster);
+                                    battleActivity.setBattleOpponentHealth(clientMonster);
+
                                 }
 
                                 if (serverPlayer != null) {
                                     battleActivity.setBattlePlayerName(serverPlayer.getName());
-                                    battleActivity.setBattlePlayerHealth(clientMonster);
+                                    battleActivity.setBattlePlayerHealth(serverPlayer.getActiveMonster());
                                 }
                             }
                         });
@@ -389,12 +391,12 @@ public class BluetoothServer implements BluetoothNode  {
                 Log.d("Sending message: ", "from Server");
             String message = "client has connected";
 
-            InitMessage initMessage = new InitMessage(message, battleActivity.getPlayer().getName(),
-                    battleActivity.getPlayer().getActiveMonster().getPassableMonsterInfo(), null, null );
-//           / /ArrayList<String> arrayList = new ArrayList<>();
-//            arrayList.add(battleActivity.getPlayer().getName());
-
-            connectedClient.send(initMessage);
+//            InitMessage initMessage = new InitMessage(message, battleActivity.getPlayer().getName(),
+//                    battleActivity.getPlayer().getActiveMonster().getPassableMonsterInfo(), null, null );
+////           / /ArrayList<String> arrayList = new ArrayList<>();
+////            arrayList.add(battleActivity.getPlayer().getName());
+//
+//            connectedClient.send(initMessage);
 //            }
 //            catch (IOException e)
 //            {

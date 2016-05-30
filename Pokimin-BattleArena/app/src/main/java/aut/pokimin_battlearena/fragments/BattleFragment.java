@@ -142,6 +142,7 @@ public class BattleFragment extends Fragment {
     public void setPlayerName(String player)       { this.player.setText(player); }
     public void setOpponentHealth(Monster monster) { this.opponentHealth.setProgress(monster.getHealth()); }
     public void setPlayerHealth(Monster monster)   { this.playerHealth.setProgress(monster.getHealth()); }
+    public void setMaxOpponentHealth(Monster monster){ this.opponentHealth.setMax(monster.getHealth());}
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // UTILITY
