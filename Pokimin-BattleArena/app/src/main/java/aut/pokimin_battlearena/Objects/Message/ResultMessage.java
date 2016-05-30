@@ -11,19 +11,19 @@ import aut.pokimin_battlearena.Objects.Player;
  */
 public class ResultMessage extends AbstractMessage {
 
-    private Player winner;
+    private String winner;
     private int expGain;
 
-    public ResultMessage(String message, Player winner, int expGain){
+    public ResultMessage(String message, String winner, int expGain){
         super(message);
         this.winner = winner;
         this.expGain = expGain;
 
     }
 
-    public Player getWinner() {return winner;}
+    public String getWinner() {return winner;}
     public int getExpGain() {return expGain;}
 
-    public void setWinner(Player winner) {this.winner = winner;}
+    public void setWinner(String winner) {this.winner = winner;}
     public void setExpGain(int expGain) {this.expGain = expGain;}
 }

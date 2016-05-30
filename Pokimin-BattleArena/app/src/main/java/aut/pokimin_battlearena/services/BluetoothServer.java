@@ -7,6 +7,7 @@ import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.TextView;
@@ -53,17 +54,17 @@ public class BluetoothServer implements BluetoothNode  {
 
     Handler handler;
     TextView searchMessage;
-
+    Context context;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // CONSTRUCTOR
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    public BluetoothServer() {
+    public BluetoothServer(Context context) {
         connectedClient = null;
         messages        = new ArrayList<>();
         battleActivity  = null;
-
+        this.context    = context;
 
         stopRequest = false;
         handler = new Handler();
@@ -99,7 +100,7 @@ public class BluetoothServer implements BluetoothNode  {
                         searchMessage.setText("Looking for devices...");
                     }
                 });
-                 socket = serverSocket.accept(30000);
+                 socket = serverSocket.accept(50000);
 
                 handler.post(new Runnable() {
                     public void run() {
@@ -128,7 +129,7 @@ public class BluetoothServer implements BluetoothNode  {
                     });
 
                     // create a thread for the client (message reciever)
-                    connectedClient = new ClientHandler(socket);
+                    connectedClient = new ClientHandler(socket, context);
                     Thread clientThread = new Thread(connectedClient);
                     clientThread.start();
                     // notify activity a client has connected
@@ -196,13 +197,14 @@ public class BluetoothServer implements BluetoothNode  {
 
     public void sendPlayerInfo() {
 
-      //  try {
+//        try {
             String message = "client has connected";
-            //InitMessage initMessage = new InitMessage(message, battleActivity.getPlayer(), null );
+            InitMessage initMessage = new InitMessage(message, battleActivity.getPlayer().getName(),
+                    battleActivity.getPlayer().getActiveMonster().getPassableMonsterInfo(), null, null  );
 
-            //connectedClient.send(initMessage);
-/////       }
-// catch (IOException e) {
+            connectedClient.send(initMessage);
+//       }
+//        catch (IOException e) {
 //            System.err.println("Unable to send the player to the server: " + e);
 //        }
     }
@@ -213,13 +215,13 @@ public class BluetoothServer implements BluetoothNode  {
             Monster monster = battleActivity.getPlayer().getActiveMonster();
             String message = monster.getName() + " has used to skill " + skill;
 
-            SkillMessage skillMessage = new SkillMessage(message,  monster, skill, null, null);
+            SkillMessage skillMessage = new SkillMessage(message,  monster.getPassableMonsterInfo(), skill.getPassableSkillInfo(), null, null);
 
             connectedClient.send(skillMessage);
 
-        //} catch (IOException e) {
-      //      System.err.println("Unable to send selected skill to the server: " + e);
-     //   }
+//        } catch (IOException e) {
+//            System.err.println("Unable to send selected skill to the server: " + e);
+//        }
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -233,10 +235,12 @@ public class BluetoothServer implements BluetoothNode  {
         private BluetoothSocket socket;
         private ObjectInputStream input;
         private ObjectOutputStream output;
+        private Context context;
 
         // CONSTRUCTOR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        public ClientHandler(BluetoothSocket socket) {
+        public ClientHandler(BluetoothSocket socket, Context context) {
              this.socket = socket;
+             this.context = context;
             try {
                 output = new ObjectOutputStream(socket.getOutputStream());
                 input = new  ObjectInputStream(socket.getInputStream());
@@ -270,6 +274,7 @@ public class BluetoothServer implements BluetoothNode  {
                         final InitMessage message = (InitMessage) object;
                         final String clientPlayer = message.getClientPlayerName();
                         final Player serverPlayer = battleActivity.getPlayer();
+                        final Monster clientMonster = new Monster(this.context, message.getClientMonInfo());
                         messages.add(message.getMessage());
 
                         handler.post(new Runnable() {
@@ -277,14 +282,14 @@ public class BluetoothServer implements BluetoothNode  {
                                 battleActivity.setBattleResponseMessage(message.getMessage());
 
                                 // set name and health of both monsters
-                                if (serverPlayer != null) {
-                                    battleActivity.setBattleOpponentName(serverPlayer.getName());
+                                if (clientPlayer != null) {
+                                    battleActivity.setBattleOpponentName(clientPlayer);
                                     battleActivity.setBattleOpponentHealth(serverPlayer.getActiveMonster());
                                 }
 
-                                if (clientPlayer != null) {
-                                    battleActivity.setBattlePlayerName(clientPlayer);
-//                                    battleActivity.setBattlePlayerHealth(clientPlayer.getActiveMonster());
+                                if (serverPlayer != null) {
+                                    battleActivity.setBattlePlayerName(serverPlayer.getName());
+                                    battleActivity.setBattlePlayerHealth(clientMonster);
                                 }
                             }
                         });
@@ -292,6 +297,8 @@ public class BluetoothServer implements BluetoothNode  {
                     } else if (object instanceof BattleMessage) {
 
                         final BattleMessage message = (BattleMessage) object;
+                        final Monster serverMonster = new Monster(this.context, message.getServerMonster());
+                        final Monster clientMonster = new Monster(this.context, message.getClientMonster());
                         messages.add(message.getMessage());
 
                         handler.post(new Runnable() {
@@ -299,11 +306,11 @@ public class BluetoothServer implements BluetoothNode  {
                                 battleActivity.setBattleResponseMessage(message.getMessage());
 
                                 // change health of monsters
-                                if (message.getServerMonster() != null) {
-                                    battleActivity.setBattleOpponentHealth(message.getServerMonster());
+                                if (clientMonster != null) {
+                                    battleActivity.setBattleOpponentHealth(clientMonster);
                                 }
-                                if (message.getClientMonster() != null) {
-                                    battleActivity.setBattlePlayerHealth(message.getClientMonster());
+                                if (serverMonster != null) {
+                                    battleActivity.setBattlePlayerHealth(serverMonster);
                                 }
                             }
                         });
