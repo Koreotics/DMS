@@ -67,7 +67,8 @@
         android:id="@+id/move_sets"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:numColumns="auto_fit"/>
 
     <Button
         style="?android:attr/buttonStyleSmall"

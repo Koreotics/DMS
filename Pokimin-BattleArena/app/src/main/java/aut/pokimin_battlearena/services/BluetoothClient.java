@@ -214,9 +214,6 @@ public class BluetoothClient implements BluetoothNode {
     public void stop() {
         stopRequest = true;
 
-
-
-
         if (receiver != null) { activity.unregisterReceiver(receiver);
             receiver = null;}
 
