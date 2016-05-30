@@ -1,6 +1,6 @@
 package aut.pokimin_battlearena.Objects.Message;
 
-import aut.pokimin_battlearena.Objects.HashMap<String, String>;
+import aut.pokimin_battlearena.Objects.Monster;
 import aut.pokimin_battlearena.Objects.Player;
 import aut.pokimin_battlearena.Objects.Skill;
 
@@ -9,14 +9,14 @@ import aut.pokimin_battlearena.Objects.Skill;
  */
 public class SkillMessage extends AbstractMessage {
 
-    private HashMap<String, String> serverMonster;
-    private HashMap<String, String> clientMonster;
+    private Monster serverMonster;
+    private Monster clientMonster;
 
     private Skill serverSkill;
     private Skill clientSkill;
 
-    public SkillMessage(String message, HashMap<String, String> serverMonster, Skill serverSkill,
-                        HashMap<String, String> clientMonster, Skill clientSkill) {
+    public SkillMessage(String message, Monster serverMonster, Skill serverSkill,
+                        Monster clientMonster, Skill clientSkill) {
         super(message);
 
         this.serverMonster = serverMonster;
@@ -26,13 +26,13 @@ public class SkillMessage extends AbstractMessage {
         this.clientSkill = clientSkill;
     }
 
-    public HashMap<String, String> getServerMonster() { return serverMonster; }
-    public HashMap<String, String> getClientMonster() { return clientMonster; }
+    public Monster getServerMonster() { return serverMonster; }
+    public Monster getClientMonster() { return clientMonster; }
     public Skill   getServerSkill()   { return serverSkill; }
     public Skill   getClientSkill()   { return clientSkill; }
 
-    public void setServerMonster(HashMap<String, String> monster) { serverMonster = monster; }
-    public void setClientMonster(HashMap<String, String> monster) { clientMonster = monster; }
+    public void setServerMonster(Monster monster) { serverMonster = monster; }
+    public void setClientMonster(Monster monster) { clientMonster = monster; }
     public void setServerSkill(Skill skill)       { serverSkill = skill; }
     public void setClientSkill(Skill skill)       { clientSkill = skill; }
 }
