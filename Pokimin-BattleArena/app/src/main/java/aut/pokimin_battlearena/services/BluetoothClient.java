@@ -166,6 +166,7 @@ public class BluetoothClient implements BluetoothNode {
                 Thread receiverThread = new Thread(connection);
                 receiverThread.start();
 
+                sendPlayerInfo();
                 // start sending messages to server
                 while (!stopRequest) {
                     // TODO: start sender thread here
@@ -287,6 +288,7 @@ public class BluetoothClient implements BluetoothNode {
         public ServerConnection(BluetoothSocket socket, Context context) {
             try {
                 this.socket = socket;
+                this.context = context;
                 this.input  = new ObjectInputStream(socket.getInputStream());
                 this.output = new ObjectOutputStream(socket.getOutputStream());
             } catch (IOException e) {
@@ -341,6 +343,7 @@ public class BluetoothClient implements BluetoothNode {
                                 // set name and health of both monsters
                                 if (serverPlayer != null) {
                                     activity.setBattleOpponentName(serverPlayer);
+                                    activity.setMaxOpponentHealth(serverMonster);
                                     activity.setBattleOpponentHealth(serverMonster);
                                 }
 
