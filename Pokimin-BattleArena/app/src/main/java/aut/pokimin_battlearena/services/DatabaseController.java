@@ -19,6 +19,7 @@ import aut.pokimin_battlearena.Objects.Skill;
  */
 public class DatabaseController extends SQLiteOpenHelper implements Serializable{
 
+    private static final long serialVersionUID = 1;
     public static final String DATABASE_NAME = "Pokimin.db";
 
 

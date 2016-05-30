@@ -14,6 +14,7 @@ import aut.pokimin_battlearena.services.DatabaseController;
  */
 public class Player implements Serializable {
 
+    private static final long serialVersionUID = 1;
     private String name;
     private Monster activeMonster;
 
@@ -25,6 +26,7 @@ public class Player implements Serializable {
         dbc = new DatabaseController(context);
         activeMonster = new Monster(context, dbc.getActiveMonsterName(name));
     }
+
 
 
 

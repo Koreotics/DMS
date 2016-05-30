@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import aut.pokimin_battlearena.services.DatabaseController;
 
@@ -14,6 +15,7 @@ import aut.pokimin_battlearena.services.DatabaseController;
  */
 public class Skill implements Serializable{
 
+    private static final long serialVersionUID = 1;
     private String name = "";
     private String type = "";
     private double multiply = 0;
@@ -28,11 +30,32 @@ public class Skill implements Serializable{
         dbc.setSkillInfo(name, this);
     }
 
+    public Skill(HashMap<String, String> map){
+        setName(map.get("name"));
+        setType(map.get("type"));
+        setMultiply(Integer.parseInt(map.get("multiply")));
+        setMaxPP(Integer.parseInt(map.get("maxPP")));
+        setSpeed(Integer.parseInt(map.get("speed")));
+
+
+    }
+
     public void printSkillInfo(){
         Log.v(name.toString(), type);
         Log.v(name.toString(), multiply+"");
         Log.v(name.toString(), maxPP+"");
         Log.v(name.toString(), speed+"");
+    }
+
+    public HashMap<String, String> getPassableSkillInfo(){
+        HashMap<String, String> skillInfo = new HashMap<>();
+        skillInfo.put("name", getName());
+        skillInfo.put("type", getType());
+        skillInfo.put("multiply", getMultiply()+"");
+        skillInfo.put("maxPP", getMaxPP()+"");
+        skillInfo.put("speed", getSpeed()+"");
+
+        return skillInfo;
     }
 
     //----------------------------------------------------------------------------------------------

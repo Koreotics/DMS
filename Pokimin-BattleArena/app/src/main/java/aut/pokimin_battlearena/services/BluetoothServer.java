@@ -44,7 +44,7 @@ public class BluetoothServer implements BluetoothNode  {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     private static final long SERIAL_VERSION_UID = 1;
-
+    private static final long serialVersionUID = 1;
     private boolean stopRequest;
     private ClientHandler connectedClient;
     private List<String> messages;
@@ -53,9 +53,9 @@ public class BluetoothServer implements BluetoothNode  {
 
     Handler handler;
     TextView searchMessage;
-    private ObjectOutputStream output;
 
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // CONSTRUCTOR
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -63,7 +63,7 @@ public class BluetoothServer implements BluetoothNode  {
         connectedClient = null;
         messages        = new ArrayList<>();
         battleActivity  = null;
-        output          = null;
+
 
         stopRequest = false;
         handler = new Handler();
@@ -120,7 +120,7 @@ public class BluetoothServer implements BluetoothNode  {
                     battleActivity.getSearchDialog().dismiss();
 
 
-                    output = new ObjectOutputStream(socket.getOutputStream());
+
                     handler.post(new Runnable() {
                         public void run() {
                             searchMessage.setText("Starting Game...");
@@ -162,12 +162,12 @@ public class BluetoothServer implements BluetoothNode  {
 //            messages.add(message);
 //            messages.notifyAll();
 //        }
-        if(connectedClient != null)
-            try {
+//        if(connectedClient != null)
+//            try {
                 connectedClient.send(message);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
     }
 
     @Override
@@ -177,7 +177,7 @@ public class BluetoothServer implements BluetoothNode  {
             messages.notifyAll();
         }
         // close all client connections
-        connectedClient.closeConnection();
+        //connectedClient.closeConnection();
     }
 
 
@@ -196,29 +196,30 @@ public class BluetoothServer implements BluetoothNode  {
 
     public void sendPlayerInfo() {
 
-        try {
+      //  try {
             String message = "client has connected";
             InitMessage initMessage = new InitMessage(message, battleActivity.getPlayer(), null );
-//            output.writeObject(initMessage);
+
             connectedClient.send(initMessage);
-        } catch (IOException e) {
-            System.err.println("Unable to send the player to the server: " + e);
-        }
+/////       }
+// catch (IOException e) {
+//            System.err.println("Unable to send the player to the server: " + e);
+//        }
     }
 
     public void sendActiveSkill(Skill skill) {
 
-        try {
+       // try {
             Monster monster = battleActivity.getPlayer().getActiveMonster();
             String message = monster.getName() + " has used to skill " + skill;
 
             SkillMessage skillMessage = new SkillMessage(message,  monster, skill, null, null);
-            //output.writeObject(skillMessage);
+
             connectedClient.send(skillMessage);
 
-        } catch (IOException e) {
-            System.err.println("Unable to send selected skill to the server: " + e);
-        }
+        //} catch (IOException e) {
+      //      System.err.println("Unable to send selected skill to the server: " + e);
+     //   }
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -264,7 +265,6 @@ public class BluetoothServer implements BluetoothNode  {
                                 battleActivity.setBattleResponseMessage(response);
                             }
                         });
-
                     } else if (object instanceof InitMessage) {
 
                         final InitMessage message = (InitMessage) object;
@@ -314,7 +314,7 @@ public class BluetoothServer implements BluetoothNode  {
                         messages.add(message.getMessage());
 
                         // set text on result fragment
-                        final ResultFragment fragment= battleActivity.getResultFragment();
+                        final ResultFragment fragment = battleActivity.getResultFragment();
                         handler.post(new Runnable() {
                             public void run() {
                                 fragment.setExp(message.getExpGain());
@@ -335,19 +335,29 @@ public class BluetoothServer implements BluetoothNode  {
                     }
                 }
             } catch (IOException e) {
-                battleActivity.setBattleResponseMessage("SERVER: Opponent disconnecting");
+                handler.post(new Runnable() {
+                                 public void run() {
+                                     battleActivity.setBattleResponseMessage("SERVER: Opponent disconnecting");
+                                 }
+                             });
                 Log.w("ChatServer", "Client Disconnecting");
-         } catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
+
 
 
         finally {closeConnection();}
         }
         //Use to send messages to client.
-        public void send(Object message) throws IOException {
-            output.writeObject(message);
-            output.flush();
+        public void send(Object message)  {
+
+            try {
+                output.writeObject(message);
+                output.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         public void closeConnection() {
@@ -363,8 +373,28 @@ public class BluetoothServer implements BluetoothNode  {
     private class MessageSender implements Runnable
     {
         public void run()
-        {  //while (!stopRequest)
-       // {  // get a message
+        {
+//            try
+//            {
+                //sendPlayerInfo();
+                //battleActivity.setBattleResponseMessage("Sent Message: yoyo" );
+             //   connectedClient.send("hihi");
+                Log.d("Sending message: ", "from Server");
+            String message = "client has connected";
+
+            InitMessage initMessage = new InitMessage(message, battleActivity.getPlayer().getName(),
+                    battleActivity.getPlayer().getActiveMonster().getPassableMonsterInfo(), null, null );
+//           / /ArrayList<String> arrayList = new ArrayList<>();
+//            arrayList.add(battleActivity.getPlayer().getName());
+
+            connectedClient.send(initMessage);
+//            }
+//            catch (IOException e)
+//            {
+//                Log.e("Server", "Message failed to send: " + e);
+//            }
+            while (!stopRequest)
+        {  // get a message
 //            String message;
 //            synchronized (messages)
 //            {
@@ -382,18 +412,8 @@ public class BluetoothServer implements BluetoothNode  {
 //            if (battleActivity != null)
 //                battleActivity.showReceivedMessage("RECEIVED: "+message);
             // pass message to all clients
-           // try
-            //{
-                sendPlayerInfo();
-                //battleActivity.setBattleResponseMessage("Sent Message: yoyo" );
-                Log.d("Sending message: ", "from Server");
 
-          //  }
-//            catch (IOException e)
-//            {
-//                Log.e("Server", "Message failed to send: " + e);
-//            }
-        //}
+        }
         }
         }
 

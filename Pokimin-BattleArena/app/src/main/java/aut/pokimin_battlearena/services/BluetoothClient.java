@@ -52,7 +52,7 @@ public class BluetoothClient implements BluetoothNode {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // FIELDS
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
+    private static final long serialVersionUID = 1;
     private boolean stopRequest;
 
     // bluetooth related fields
@@ -168,6 +168,7 @@ public class BluetoothClient implements BluetoothNode {
                 // start sending messages to server
                 while (!stopRequest) {
                     // TODO: start sender thread here
+
                 }
             } else { //if connection failed
                 handler.post(new Runnable() {
@@ -300,6 +301,20 @@ public class BluetoothClient implements BluetoothNode {
                 while (!stopRequest) {
                     Object object = input.readObject();
 
+                    if(object instanceof ArrayList){
+                        final ArrayList<String> message = (ArrayList) object;
+                        final Player clientPlayer = activity.getPlayer();
+                        final String serverPlayer = message.get(0);
+                       // messages.add(message.getMessage());
+
+                        handler.post(new Runnable() {
+                            public void run() {
+                                activity.setBattleResponseMessage(serverPlayer);
+
+
+                            }
+                        });
+                    }
                     if (object instanceof String) {
                         final String response = (String) object;
                         messages.add(response);

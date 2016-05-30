@@ -1,6 +1,7 @@
 package aut.pokimin_battlearena.Objects.Message;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 import aut.pokimin_battlearena.Objects.Player;
 
@@ -11,18 +12,28 @@ import aut.pokimin_battlearena.Objects.Player;
  */
 public class InitMessage extends AbstractMessage {
 
-    private Player serverPlayer;
-    private Player clientPlayer;
+    private String serverPlayerName;
+    private String clientPlayerName;
+    HashMap<String, String> serverMonInfo;
+    HashMap<String, String> clientMonInfo;
 
-    public InitMessage(String message, Player serverPlayer, Player clientPlayer) {
+    public InitMessage(String message, String serverPlayer, HashMap<String, String> serverMonInfo,
+                       String clientPlayer, HashMap<String, String> clientMonInfo) {
         super(message);
-        this.serverPlayer = serverPlayer;
-        this.clientPlayer = clientPlayer;
+        this.serverPlayerName = serverPlayer;
+        this.clientPlayerName = clientPlayer;
+        this.serverMonInfo = serverMonInfo;
+        this.clientMonInfo = clientMonInfo;
+
     }
 
-    public Player getServerPlayer() {return serverPlayer;}
-    public void setServerPlayer(Player serverPlayer) {this.serverPlayer = serverPlayer;}
+    public String getServerPlayerName() {return serverPlayerName;}
+    public String getClientPlayerName() {return clientPlayerName;}
+    public HashMap<String, String> getServerMonInfo() {return serverMonInfo;}
+    public HashMap<String, String> getClientMonInfo() {return clientMonInfo;}
 
-    public Player getClientPlayer() {return clientPlayer;}
-    public void setClientPlayer(Player clientPlayer) {this.clientPlayer = clientPlayer;}
+    public void setServerPlayerName(String serverPlayerName) {this.serverPlayerName = serverPlayerName;}
+    public void setClientPlayerName(String clientPlayerName) {this.clientPlayerName = clientPlayerName;}
+    public void setServerMonInfo(HashMap<String, String> serverMonInfo) {this.serverMonInfo = serverMonInfo;}
+    public void setClientMonInfo(HashMap<String, String> clientMonInfo) {this.clientMonInfo = clientMonInfo;}
 }
