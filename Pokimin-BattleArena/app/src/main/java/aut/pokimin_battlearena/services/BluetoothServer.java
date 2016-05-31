@@ -52,7 +52,6 @@ public class BluetoothServer implements BluetoothNode  {
     private List<SkillMessage> messages;
     private BattleActivity battleActivity;
 
-
     Handler handler;
     TextView searchMessage;
     Context context;
@@ -289,14 +288,14 @@ public class BluetoothServer implements BluetoothNode  {
 
                                 // set name and health of both monsters
                                 if (clientPlayer != null) {
-                                    battleActivity.setBattleOpponentName(clientPlayer);
+                                    battleActivity.setBattleOpponentName(clientPlayer + ": " + clientMonster.getName());
                                     battleActivity.setMaxOpponentHealth(clientMonster);
                                     battleActivity.setBattleOpponentHealth(clientMonster);
 
                                 }
 
                                 if (serverPlayer != null) {
-                                    battleActivity.setBattlePlayerName(serverPlayer.getName());
+                                    battleActivity.setBattlePlayerName(serverPlayer.getName() + ": " + serverPlayer.getActiveMonster().getName());
                                     battleActivity.setBattlePlayerHealth(serverPlayer.getActiveMonster());
                                 }
                             }

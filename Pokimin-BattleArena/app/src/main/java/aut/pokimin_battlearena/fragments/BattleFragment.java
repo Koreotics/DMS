@@ -53,8 +53,6 @@ public class BattleFragment extends Fragment {
     ProgressBar opponentHealth;
     ProgressBar playerHealth;
 
-    Button test;
-
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // FRAGMENT
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,13 +75,6 @@ public class BattleFragment extends Fragment {
         playerHealth   = (ProgressBar) view.findViewById(R.id.player_hp);
 
         playerHealth.setMax(battleActivity.getPlayer().getActiveMonster().getHealth());
-        test = (Button) view.findViewById(R.id.testButton);
-        test.setOnClickListener(new AdapterView.OnClickListener() {
-            public void onClick(View v) {
-                //when test button is pressed
-                bluetoothNode.forward("test");
-            }
-        });
 
         final BattleActivity activity = (BattleActivity) getActivity();
         Player player1 = activity.getPlayer();
@@ -97,7 +88,7 @@ public class BattleFragment extends Fragment {
         minionMoves.add(minion.getSkill4());
 
         // setting player information
-        player.setText(minion.getName());
+        player.setText(player1.getName() + ": " + minion.getName());
         playerHealth.setProgress(minion.getHealth());
 
         // setting moves within moveSet

@@ -44,10 +44,6 @@ import aut.pokimin_battlearena.fragments.ResultFragment;
  */
 public class BluetoothClient implements BluetoothNode {
 
-    // TODO: register discovery receiver
-    // TODO: include actions to the discovery receiver
-    // TODO: wait for a device with a service
-    // TODO: start communicating
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // FIELDS
@@ -342,13 +338,13 @@ public class BluetoothClient implements BluetoothNode {
 
                                 // set name and health of both monsters
                                 if (serverPlayer != null) {
-                                    activity.setBattleOpponentName(serverPlayer);
+                                    activity.setBattleOpponentName(serverPlayer + ": " + serverMonster.getName());
                                     activity.setMaxOpponentHealth(serverMonster);
                                     activity.setBattleOpponentHealth(serverMonster);
                                 }
 
                                 if (clientPlayer != null) {
-                                    activity.setBattlePlayerName(clientPlayer.getName());
+                                    activity.setBattlePlayerName(clientPlayer.getName() + ": " + clientPlayer.getActiveMonster().getName());
                                     activity.setBattlePlayerHealth(clientPlayer.getActiveMonster());
                                 }
                             }

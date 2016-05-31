@@ -9,6 +9,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/main_activity_background"
 
     tools:context=".activities.MainActivity">
 
@@ -18,9 +19,11 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
+        android:layout_below="@+id/player_sprite"
         android:text="@string/player_name_filler"
+        android:layout_marginTop="16dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="30dp"
     />
 
     <ImageView
@@ -29,16 +32,27 @@
 
         android:layout_width="wrap_content"
         android:layout_height="100dp"
-        android:layout_below="@+id/main_player_name"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
+
+    <ImageView
+        android:id="@+id/player_sprite"
+        android:src="@drawable/main_blob_front"
+
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/logo"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+
+        />
 
     <RelativeLayout
         android:id="@+id/main_fragment"
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/logo"
+        android:layout_below="@+id/main_player_name"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true">
 
