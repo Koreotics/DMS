@@ -350,7 +350,7 @@ public class BluetoothServer implements BluetoothNode  {
                                 }
                             }
                         });
-                        BluetoothServer.hasAttacked = false;
+
 
                     } else if (object instanceof ResultMessage) {
 
@@ -471,10 +471,10 @@ public class BluetoothServer implements BluetoothNode  {
 
             }
             else{
-                clientMonster = new Monster(this.context, skillMessage1.getServerMonster());
-                clientSkill = new Skill(skillMessage1.getServerSkill());
-                serverMonster = new Monster(this.context, skillMessage2.getClientMonster());
-                serverSkill = new Skill(skillMessage2.getClientSkill());
+                serverMonster = new Monster(this.context, skillMessage1.getServerMonster());
+                serverSkill = new Skill(skillMessage1.getServerSkill());
+                clientMonster = new Monster(this.context, skillMessage2.getClientMonster());
+                clientSkill = new Skill(skillMessage2.getClientSkill());
             }
 
 
@@ -490,6 +490,7 @@ public class BluetoothServer implements BluetoothNode  {
             if (battleActivity.getPlayer().getActiveMonster() != null) {
                 battleActivity.setBattlePlayerHealth(battleActivity.getPlayer().getActiveMonster());
             }
+            BluetoothServer.hasAttacked = false;
             // put message on server display
 //            if (battleActivity != null)
 //                battleActivity.showReceivedMessage("RECEIVED: "+message);
