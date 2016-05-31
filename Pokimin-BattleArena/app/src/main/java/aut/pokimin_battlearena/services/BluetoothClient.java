@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -34,6 +35,7 @@ import aut.pokimin_battlearena.Objects.Player;
 import aut.pokimin_battlearena.Objects.Skill;
 import aut.pokimin_battlearena.R;
 import aut.pokimin_battlearena.activities.BattleActivity;
+import aut.pokimin_battlearena.activities.MainActivity;
 import aut.pokimin_battlearena.fragments.ResultFragment;
 
 
@@ -107,7 +109,6 @@ public class BluetoothClient implements BluetoothNode {
         intentFilter.addAction(BluetoothDevice.ACTION_FOUND);
         intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        intentFilter.addAction(BluetoothDevice.ACTION_UUID);
         activity.registerReceiver(receiver, intentFilter);
 
         // start device discovery
@@ -257,8 +258,10 @@ public class BluetoothClient implements BluetoothNode {
 
         try {
             if(BluetoothClient.haveAttacked == false) {
-                Monster monster = activity.getPlayer().getActiveMonster();
-                String message = monster.getName() + " has used to skill " + skill;
+                Player player = activity.getPlayer();
+                Monster monster = player.getActiveMonster();
+                String message = player.getName() + "'s " +
+                        monster.getName() + " has used the skill " + skill.getName();
 
                 SkillMessage skillMessage = new SkillMessage(message, null, null, monster.getPassableMonsterInfo(),
                         skill.getPassableSkillInfo());
@@ -269,7 +272,7 @@ public class BluetoothClient implements BluetoothNode {
             else{
                 handler.post(new Runnable() {
                     public void run() {
-                        activity.setSearchResponseMessage("Waiting for oppenent to enter move");
+                        activity.setSearchResponseMessage("Waiting for opponent to enter move");
                     }
                 });
             }
@@ -411,6 +414,8 @@ public class BluetoothClient implements BluetoothNode {
                         transaction.replace(R.id.battle_fragment, fragment);
                         transaction.commit();
 
+                        stopRequest = true;
+
                     }
                 }
             }
@@ -423,7 +428,16 @@ public class BluetoothClient implements BluetoothNode {
                 if (output != null) output.close();
                 if (socket != null) socket.close();
             } catch (IOException ex) {
-                System.err.println("Unable to close connection: " + ex);
+                handler.post(new Runnable() {
+                    public void run() {
+                        activity.setBattleResponseMessage("SERVER: Opponent disconnecting");
+                    }
+                });
+                Log.w("ChatServer", "Client Disconnecting");
+
+                Intent intent = new Intent(activity, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                activity.startActivity(intent);
             }
         }
 
