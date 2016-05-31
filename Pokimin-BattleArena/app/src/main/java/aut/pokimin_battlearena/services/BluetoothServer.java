@@ -55,7 +55,7 @@ public class BluetoothServer implements BluetoothNode  {
     Handler handler;
     TextView searchMessage;
     Context context;
-
+    static boolean hasAttacked;
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // CONSTRUCTOR
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,6 +68,7 @@ public class BluetoothServer implements BluetoothNode  {
 
         stopRequest = false;
         handler = new Handler();
+        hasAttacked = false;
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -211,17 +212,18 @@ public class BluetoothServer implements BluetoothNode  {
 
     public void sendActiveSkill(Skill skill) {
 
-       // try {
+        if(hasAttacked == false) {
             Monster monster = battleActivity.getPlayer().getActiveMonster();
             String message = monster.getName() + " has used to skill " + skill;
 
-            SkillMessage skillMessage = new SkillMessage(message,  monster.getPassableMonsterInfo(), skill.getPassableSkillInfo(), null, null);
+            SkillMessage skillMessage = new SkillMessage(message, monster.getPassableMonsterInfo(), skill.getPassableSkillInfo(), null, null);
 
-     //       connectedClient.send(skillMessage);
-        synchronized (messages) {
-            messages.add(skillMessage);
-            if(messages.size() ==2) messages.notifyAll();
+            synchronized (messages) {
+                messages.add(skillMessage);
+                if (messages.size() == 2) messages.notifyAll();
 
+            }
+            hasAttacked = true;
         }
 
 //        } catch (IOException e) {
@@ -348,6 +350,7 @@ public class BluetoothServer implements BluetoothNode  {
                                 }
                             }
                         });
+                        BluetoothServer.hasAttacked = false;
 
                     } else if (object instanceof ResultMessage) {
 

@@ -66,6 +66,7 @@ public class BluetoothClient implements BluetoothNode {
     Handler handler;
     TextView searchMessage;
     Context context;
+    static boolean haveAttacked;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // CONSTRUCTOR
@@ -86,6 +87,7 @@ public class BluetoothClient implements BluetoothNode {
         stopRequest = false;
 
         handler = new Handler();
+        haveAttacked = false;
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -254,12 +256,24 @@ public class BluetoothClient implements BluetoothNode {
         ObjectOutputStream output = connection.output;
 
         try {
-            Monster monster = activity.getPlayer().getActiveMonster();
-            String message = monster.getName() + " has used to skill " + skill;
+            if(BluetoothClient.haveAttacked == false) {
+                Monster monster = activity.getPlayer().getActiveMonster();
+                String message = monster.getName() + " has used to skill " + skill;
 
-            SkillMessage skillMessage = new SkillMessage(message, null, null, monster.getPassableMonsterInfo(),
-                    skill.getPassableSkillInfo());
-            output.writeObject(skillMessage);
+                SkillMessage skillMessage = new SkillMessage(message, null, null, monster.getPassableMonsterInfo(),
+                        skill.getPassableSkillInfo());
+                output.writeObject(skillMessage);
+                BluetoothClient.haveAttacked = true;
+
+            }
+            else{
+                handler.post(new Runnable() {
+                    public void run() {
+                        activity.setSearchResponseMessage("Waiting for oppenent to enter move");
+                    }
+                });
+            }
+
 
         } catch (IOException e) {
             System.err.println("Unable to send selected skill to the server: " + e);
@@ -279,6 +293,7 @@ public class BluetoothClient implements BluetoothNode {
         ObjectOutputStream output;
         Context context;
 
+
         // CONSTRUCTOR ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
         public ServerConnection(BluetoothSocket socket, Context context) {
@@ -287,6 +302,7 @@ public class BluetoothClient implements BluetoothNode {
                 this.context = context;
                 this.input  = new ObjectInputStream(socket.getInputStream());
                 this.output = new ObjectOutputStream(socket.getOutputStream());
+
             } catch (IOException e) {
                 System.err.println("Unable to extract output stream: " + e);
             }
@@ -351,7 +367,7 @@ public class BluetoothClient implements BluetoothNode {
                         });
 
                     } else if (object instanceof BattleMessage) {
-
+                        BluetoothClient.haveAttacked = false;
                         final BattleMessage message = (BattleMessage) object;
                         final Monster serverMonster = new Monster(this.context, message.getServerMonster());
                         final Monster clientMonster = new Monster(this.context, message.getClientMonster());
