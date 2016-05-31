@@ -21,10 +21,10 @@ public class Battle {
     // CONSTRUCTOR
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    public Battle(Monster serverMonster, Monster clientMonster){
+    public Battle(){
 
-        this.serverMonster = serverMonster;
-        this.clientMonster = clientMonster;
+        this.serverMonster = null;
+        this.clientMonster = null;
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

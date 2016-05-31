@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import java.io.Serializable;
 
+import aut.pokimin_battlearena.Objects.Battle;
 import aut.pokimin_battlearena.Objects.Monster;
 import aut.pokimin_battlearena.Objects.Player;
 import aut.pokimin_battlearena.Objects.Skill;
@@ -62,6 +63,7 @@ public class BattleActivity extends Activity implements Serializable,
 
     Button bluetoothButton;
     DatabaseController dbc;
+    Battle battleLogic;
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // ACTIVITY
@@ -78,6 +80,7 @@ public class BattleActivity extends Activity implements Serializable,
 //        Serializable s = intent.getSerializableExtra("player");
 //        player = (Player) s;
         dbc = new DatabaseController(this);
+        battleLogic = new Battle();
         player = new Player(this, dbc.getPlayerName());
         if (savedInstanceState == null) {
 
@@ -142,6 +145,7 @@ public class BattleActivity extends Activity implements Serializable,
 
     }
 
+
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // ACCESSORS
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -172,8 +176,26 @@ public class BattleActivity extends Activity implements Serializable,
     public void showSearchButton() { search.showSearchButton();}
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // Battle Logic
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    //returns client monster after the round. ONly called from server
+    public Monster executeBattleRound(Skill serverSkill, Monster clientMonster, Skill clientSkill){
+
+        battleLogic.setClientMonster(clientMonster);
+        battleLogic.setServerMonster(getPlayer().getActiveMonster());
+
+        battleLogic.executeBattleRound(serverSkill, clientSkill);
+        getPlayer().setActiveMonster(battleLogic.getServerMonster());
+
+        return battleLogic.getClientMonster();
+    }
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // UTILITY
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
 
     // REGISTER BLUETOOTH ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
