@@ -51,10 +51,10 @@ public class Monster implements Serializable {
         setAttack(Integer.parseInt(monsterStats.get("attack")));
         setSpeed(Integer.parseInt(monsterStats.get("speed")));
 
-        setSkill1(new Skill(context, monsterStats.get("Skill1")));
-        setSkill2(new Skill(context, monsterStats.get("Skill2")));
-        setSkill3(new Skill(context, monsterStats.get("Skill3")));
-        setSkill4(new Skill(context, monsterStats.get("Skill4")));
+        setSkill1(new Skill(context, monsterStats.get("skill1")));
+        setSkill2(new Skill(context, monsterStats.get("skill2")));
+        setSkill3(new Skill(context, monsterStats.get("skill3")));
+        setSkill4(new Skill(context, monsterStats.get("skill4")));
 
     }
 

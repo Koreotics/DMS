@@ -123,6 +123,7 @@ public class SearchDialog extends DialogFragment implements AdapterView.OnClickL
         } else if (view == server) {
 
             message.setText("You have become a server. Awaiting challenger...");
+            search.setVisibility(View.GONE);
 
             Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
             intent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);

@@ -104,6 +104,7 @@ public class BattleFragment extends Fragment {
             }
         });
 
+
         return view;
     }
 

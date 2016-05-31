@@ -99,6 +99,7 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
 
         // recreate tables
         onCreate(db);
+
     }
 
     public void prepopulateTables(SQLiteDatabase db){
@@ -110,7 +111,7 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
         ContentValues values = new ContentValues();
         values.put("Name", "Tackle");
         values.put("Type", "damage");
-        values.put("multiply", 1.2);
+        values.put("multiply", 10);
         values.put("MaxPP", 20);
         values.put("Speed", 10);
         db.insert("Skills", null, values);
@@ -118,7 +119,7 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
         values.clear();
         values.put("Name", "Ember");
         values.put("Type", "damage");
-        values.put("multiply", 1.5);
+        values.put("multiply", 20);
         values.put("MaxPP", 5);
         values.put("Speed", 15);
         db.insert("Skills", null, values);
@@ -134,7 +135,7 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
         values.clear();
         values.put("Name", "Harden");
         values.put("Type", "defence");
-        values.put("multiply", 1.2);
+        values.put("multiply", 2);
         values.put("MaxPP", 5);
         values.put("Speed", 18);
         db.insert("Skills", null, values);
@@ -149,8 +150,8 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
         values.put("Name", "Blop");
         values.put("Element", "Fire");
         values.put("Health", 20);
-        values.put("Attack", 3);
-        values.put("Defence", 0.1);
+        values.put("Attack", 10);
+        values.put("Defence", 1);
         values.put("Speed", 1);
         values.put("Skill1", "Tackle");
         values.put("Skill2", "Ember");
@@ -160,6 +161,7 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
         db.insert("Monsters", null, values);
 
         initParty(db);
+
     }
 
     //------------------------------------------------------------------------------------------
@@ -190,8 +192,9 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
                 monster.setSkill2(new Skill(context, skillName2));
                 monster.setSkill3(new Skill(context, skillName3));
                 monster.setSkill4(new Skill(context, skillName4));
-            Log.v("monster", "10");
+
         }
+        cursor.close();
 
     }
     //sets monsters current level/exp/health/attack/speed
@@ -232,7 +235,6 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
 
             cursor.close();
         }
-        Log.v("skill", "2");
 
     }
 
@@ -273,6 +275,7 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
 
         Cursor cursor = db.rawQuery(query, null);
 
+
         return cursor.moveToFirst();
     }
 
@@ -287,9 +290,9 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
 
         if (cursor.moveToFirst()) {
             name = cursor.getString(cursor.getColumnIndex("Name"));
-            cursor.close();
-        }
 
+        }
+        cursor.close();
         return name;
     }
     public void setActiveMonster(String playerName, String monsterName){
@@ -306,7 +309,6 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
 //        String updateQuery = "UPDATE Player SET ActiveMonster=\'" +monsterName+ "\' where Name=" +playerName;
 //        db.execSQL(updateQuery);
 
-        Log.v("skill", "2");
     }
 
     public String getActiveMonsterName(String playerName){
@@ -320,8 +322,9 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
         //
         if (cursor.moveToFirst()) {
             activeMon = cursor.getString(cursor.getColumnIndex("ActiveMonster"));
-            cursor.close();
+
         }
+        cursor.close();
         return activeMon;
     }
 
@@ -373,6 +376,7 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
 
 
         db.update("Party", values, "Name=?", new String[]{monster.getName()});
+
     }
 
 }

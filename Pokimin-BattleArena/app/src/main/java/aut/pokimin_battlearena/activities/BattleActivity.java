@@ -186,7 +186,7 @@ public class BattleActivity extends Activity implements Serializable,
         battleLogic.setServerMonster(getPlayer().getActiveMonster());
 
         battleLogic.executeBattleRound(serverSkill, clientSkill);
-        getPlayer().setActiveMonster(battleLogic.getServerMonster());
+        getPlayer().updateActiveMonster(battleLogic.getServerMonster());
 
         return battleLogic.getClientMonster();
     }
