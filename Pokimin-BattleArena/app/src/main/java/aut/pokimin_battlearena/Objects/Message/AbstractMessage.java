@@ -9,6 +9,7 @@ import java.io.Serializable;
  */
 public abstract class AbstractMessage implements Serializable{
 
+    private static final long serialVersionUID = 1;
     public String message;
 
     public AbstractMessage(String message){

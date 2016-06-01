@@ -12,6 +12,7 @@ import aut.pokimin_battlearena.Objects.Player;
  */
 public class BattleMessage extends AbstractMessage {
 
+    private static final long serialVersionUID = 1;
     private HashMap<String, String>  serverMonster;
     private HashMap<String, String>  clientMonster;
 
