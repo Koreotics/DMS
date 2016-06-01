@@ -97,9 +97,15 @@ public class Battle {
         if(!fasterMonsterProtected) {
             //calculates damage and reduces the defending monsters health
             double randValue = 0.8 + ((1-0.8) * new Random().nextDouble());
-            int totalAttack = (int) ((int) ((((2*attackingMon.getLevel()+10)/200) * (attack.getMultiply()/defendingMon.getDefence())
-                                                        * attackingMon.getAttack() + 2)) * randValue);
-            int newHealth = defendingMon.getHealth() - totalAttack;
+            int attackMonLvl = attackingMon.getLevel();
+            double levelBasedCalc = 2*attackMonLvl+10;
+            levelBasedCalc = levelBasedCalc / 250;
+            double weaponDefCalc =  ((int) attack.getMultiply()/(int) defendingMon.getDefence());
+
+            double totalAttack = (levelBasedCalc*  weaponDefCalc * attackingMon.getAttack()) + 2;
+            totalAttack = (int) (totalAttack * randValue);
+
+            int newHealth = defendingMon.getHealth() - (int) totalAttack;
             defendingMon.setHealth(newHealth);
             if (defendingMon.getHealth() <= 0) //returns true if monster is killed
                 return true;

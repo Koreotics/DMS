@@ -492,7 +492,7 @@ public class BluetoothServer implements BluetoothNode  {
 
                 //checks win conditions and sends results messages
 
-                if(serverMonster.getHealth() <= 0){ // client wins
+                if(player.getActiveMonster().getHealth() <= 0){ // client wins
                     sendResultsMessage("You are the winner!!", "are victorious", clientMonster.getLevel()*5+10);
                     showResultsPage(new ResultMessage("You Lose.", "have been defeated", player.getActiveMonster().getLevel()+10));
                 }
