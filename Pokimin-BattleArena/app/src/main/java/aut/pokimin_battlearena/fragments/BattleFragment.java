@@ -41,6 +41,7 @@ public class BattleFragment extends Fragment {
 
     OnFragmentInteractionListener mListener;
 
+    boolean moveMade;
     BluetoothNode bluetoothNode;
     BattleActivity battleActivity;
 
@@ -80,7 +81,7 @@ public class BattleFragment extends Fragment {
         Player player1 = activity.getPlayer();
         Monster minion = player1.getActiveMonster();
 
-        ArrayList<Skill> minionMoves = new ArrayList<>();
+        final ArrayList<Skill> minionMoves = new ArrayList<>();
 
         minionMoves.add(minion.getSkill1());
         minionMoves.add(minion.getSkill2());
@@ -100,10 +101,13 @@ public class BattleFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Skill selectedMove = (Skill) adapter.getItem(position);
-                activity.sendActiveSkill(selectedMove);
-                selectedMove.reducePP();
-                adapter.notifyDataSetChanged();
-                activity.setBattleResponseMessage("Waiting for Opponent to make his move...");
+
+                if (selectedMove.getMaxPP() <= 0) {
+                    activity.setBattleResponseMessage("Unable to select move: Insufficient power points");
+                } else {
+                    activity.sendActiveSkill(selectedMove, position, minionMoves, moveSet, adapter);
+                    activity.setBattleResponseMessage("Waiting for Opponent to make his move...");
+                }
             }
         });
 
@@ -161,6 +165,8 @@ public class BattleFragment extends Fragment {
         }
 
     }
+
+
     
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // CLASS
