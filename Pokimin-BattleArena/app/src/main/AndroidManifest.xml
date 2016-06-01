@@ -24,7 +24,6 @@
         </activity>
         <activity android:name=".activities.MinionActivity" />
         <activity android:name=".activities.BattleActivity" />
-        <activity android:name=".activities.PlayerActivity" />
         <activity
             android:name=".activities.TrainingActivity"
             android:label="@string/title_activity_training" >

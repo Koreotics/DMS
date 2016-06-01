@@ -9,7 +9,6 @@
 
     <string name="player_name_filler">Player name</string>
     <string-array name="menu_list">
-        <item>Player</item>
         <item>Minion</item>
         <item>Battle</item>
         <item>Training</item>

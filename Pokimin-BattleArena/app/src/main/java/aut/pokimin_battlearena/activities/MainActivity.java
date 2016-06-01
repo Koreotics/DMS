@@ -56,42 +56,10 @@ public class MainActivity extends Activity implements
         }
 
         transaction.commit();
-
-
-        //---------------Debugging/testing for DBController---------------------------
-//        Log.v("test2", "success");
-//        database = new DatabaseController(this);
-//        Log.v("test4", "success");
-//        Monster monster = new Monster(this, "Blop");
-//        monster.printInfo();
-//        Log.v("test3", "success");
-
-//        database.createPlayer("Dominic"); //creates a player entry
-//        Player player = new Player(this, "Dominic");
-//        player.printPlayerInfoDebug();
-        //------------------------------------------------------------------
     }
 
     public DatabaseController getDatabase() { return database; }
+    public Player             getMyPlayer() { return myPlayer; }
 
-    @Override
-    public void onMainMenuFragmentInteraction(int position) {
-
-        Intent intent = new Intent(this, MainActivity.class);
-
-        // Creating content for intent
-        switch (position) {
-            case 0: intent = new Intent(this, PlayerActivity.class); break;
-            case 1: intent = new Intent(this, MinionActivity.class); break;
-            case 2:
-                intent.putExtra("fragmentID", 0);
-                intent = new Intent(this, BattleActivity.class);
-                break;
-        }
-
-        startActivity(intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-
-    }
-
-    public Player getMyPlayer() {return myPlayer;}
+    @Override public void onMainMenuFragmentInteraction(int position) {}
 }

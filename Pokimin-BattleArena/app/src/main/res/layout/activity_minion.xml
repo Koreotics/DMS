@@ -14,10 +14,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="30dp"
         android:text="&lt;name>"
         android:id="@+id/minion_name"
-        android:layout_below="@+id/imageView"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -25,7 +26,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="&lt;element>"
         android:id="@+id/minion_element"
-        android:layout_below="@+id/minion_name"
+        android:layout_below="@+id/imageView"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -48,12 +49,12 @@
 
     <ImageView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:id="@+id/imageView"
-        android:src="@drawable/pokimin"
-        android:layout_alignParentTop="true"
+        android:src="@drawable/blob_front"
+        android:layout_below="@id/minion_name"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentLeft="true" />
 
     <TextView
         android:layout_width="wrap_content"

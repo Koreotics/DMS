@@ -4,21 +4,18 @@ import android.app.Activity;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import aut.pokimin_battlearena.Objects.Player;
 import aut.pokimin_battlearena.R;
 import aut.pokimin_battlearena.activities.BattleActivity;
 import aut.pokimin_battlearena.activities.MainActivity;
 import aut.pokimin_battlearena.activities.MinionActivity;
-import aut.pokimin_battlearena.activities.PlayerActivity;
 import aut.pokimin_battlearena.activities.TrainingActivity;
 
 
@@ -83,16 +80,14 @@ public class MainMenuFragment extends ListFragment implements AdapterView.OnItem
 
         Intent intent = new Intent(getActivity(), MainActivity.class);
         Player player = ((MainActivity)activity).getMyPlayer();
+
         // Creating content for intent
         switch (position) {
-            case 0: intent = new Intent(activity, PlayerActivity.class); break;
-            case 1: intent = new Intent(activity, MinionActivity.class); break;
-            case 2:
-                intent.putExtra("fragmentID", 0);
+            case 0: intent = new Intent(activity, MinionActivity.class); break;
+            case 1: intent.putExtra("fragmentID", 0);
                 intent = new Intent(activity, BattleActivity.class);
-//                intent.putExtra("player", player);
                 break;
-            case 3: intent = new Intent(activity, TrainingActivity.class); break;
+            case 2: intent = new Intent(activity, TrainingActivity.class); break;
         }
 
         startActivity(intent);
