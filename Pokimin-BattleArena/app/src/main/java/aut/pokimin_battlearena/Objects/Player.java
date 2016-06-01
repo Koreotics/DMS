@@ -42,5 +42,8 @@ public class Player implements Serializable {
     public void setActiveMonster(Monster monster) {
         this.activeMonster = monster;
         dbc.setActiveMonster(getName(), monster.getName()); }//saves active monster into database}
+    public void updateActiveMonster(Monster monster) { //for battle instances
+        this.activeMonster = monster;
+    }
 
 }

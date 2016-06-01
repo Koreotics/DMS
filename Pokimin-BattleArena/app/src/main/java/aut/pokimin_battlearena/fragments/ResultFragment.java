@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import aut.pokimin_battlearena.Objects.Battle;
 import aut.pokimin_battlearena.Objects.Monster;
 import aut.pokimin_battlearena.Objects.Player;
 import aut.pokimin_battlearena.Objects.Skill;
@@ -65,9 +66,12 @@ public class ResultFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(getActivity(), MainActivity.class);
+                BattleActivity activity = (BattleActivity) getActivity();
+                Intent intent = new Intent(activity, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 activity.startActivity(intent);
+
+                activity.stopConnection();
 
             }
 
@@ -97,7 +101,7 @@ public class ResultFragment extends Fragment {
     // ACCESSOR
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    public void setWinner(String player) { winner.setText(player + " is Victorious!"); }
+    public void setWinner(String message) { winner.setText("You " + message); }
     public void setExp(int exp)          { this.exp.setText("You have gained: " + exp + " exp..." ); }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

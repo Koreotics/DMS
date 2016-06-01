@@ -101,8 +101,12 @@ public class BattleFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Skill selectedMove = (Skill) adapter.getItem(position);
                 activity.sendActiveSkill(selectedMove);
+                selectedMove.reducePP();
+                adapter.notifyDataSetChanged();
+                activity.setBattleResponseMessage("Waiting for Opponent to make his move...");
             }
         });
+
 
         return view;
     }

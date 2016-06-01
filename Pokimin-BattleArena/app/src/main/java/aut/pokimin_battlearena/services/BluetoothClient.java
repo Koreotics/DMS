@@ -136,7 +136,7 @@ public class BluetoothClient implements BluetoothNode {
                 try {
                     socket = device.createRfcommSocketToServiceRecord(BluetoothNode.SERVICE_UUID);
                     socket.connect();
-                    //cancels discover after successful connection
+                    // cancels discover after successful connection
                     adapter.cancelDiscovery();
                 } catch (IOException e) { socket = null;}
 
@@ -357,13 +357,15 @@ public class BluetoothClient implements BluetoothNode {
 
                                 // set name and health of both monsters
                                 if (serverPlayer != null) {
-                                    activity.setBattleOpponentName(serverPlayer + ": " + serverMonster.getName());
+                                    activity.setBattleOpponentName(serverPlayer + ": " +
+                                            serverMonster.getName());
                                     activity.setMaxOpponentHealth(serverMonster);
                                     activity.setBattleOpponentHealth(serverMonster);
                                 }
 
                                 if (clientPlayer != null) {
-                                    activity.setBattlePlayerName(clientPlayer.getName() + ": " + clientPlayer.getActiveMonster().getName());
+                                    activity.setBattlePlayerName(clientPlayer.getName() + ": " +
+                                            clientPlayer.getActiveMonster().getName());
                                     activity.setBattlePlayerHealth(clientPlayer.getActiveMonster());
                                 }
                             }
@@ -374,6 +376,7 @@ public class BluetoothClient implements BluetoothNode {
                         final BattleMessage message = (BattleMessage) object;
                         final Monster serverMonster = new Monster(this.context, message.getServerMonster());
                         final Monster clientMonster = new Monster(this.context, message.getClientMonster());
+                        activity.getPlayer().updateActiveMonster(clientMonster);
                         messages.add(message.getMessage());
 
                         handler.post(new Runnable() {
@@ -397,6 +400,13 @@ public class BluetoothClient implements BluetoothNode {
 
                         // set text on result fragment
                         final ResultFragment fragment= activity.getResultFragment();
+
+                        // transact to result fragment
+                        FragmentManager manager = activity.getFragmentManager();
+                        FragmentTransaction transaction = manager.beginTransaction();
+                        transaction.replace(R.id.battle_fragment, fragment);
+                        transaction.commit();
+
                         handler.post(new Runnable() {
                             public void run() {
                                 fragment.setExp(message.getExpGain());
@@ -407,14 +417,6 @@ public class BluetoothClient implements BluetoothNode {
                         // add exp gained to monster
                         Monster minion = activity.getPlayer().getActiveMonster();
                         minion.setExp(minion.getExp() + message.getExpGain());
-
-                        // transact to result fragment
-                        FragmentManager manager = activity.getFragmentManager();
-                        FragmentTransaction transaction = manager.beginTransaction();
-                        transaction.replace(R.id.battle_fragment, fragment);
-                        transaction.commit();
-
-                        stopRequest = true;
 
                     }
                 }
@@ -458,7 +460,6 @@ public class BluetoothClient implements BluetoothNode {
             // discovery started
             } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
                 activity.setSearchResponseMessage("Searching for devices...");
-                //devices.clear();
 
             // discovery completed
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {

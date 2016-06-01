@@ -102,16 +102,15 @@ public class SearchDialog extends DialogFragment implements AdapterView.OnClickL
 
         if (view == search) {
 
-//            activity.enableDiscoverable();
-            activity.configBluetooth();
-            search.setVisibility(View.GONE);
+            if (activity.configBluetooth()) {
+                search.setVisibility(View.GONE);
 
-            BluetoothNode client = new BluetoothClient(this.getActivity());
-            client.registerActivity(activity);
+                BluetoothNode client = new BluetoothClient(this.getActivity());
+                client.registerActivity(activity);
 
-            clientThread = new Thread(client);
-            clientThread.start();
-
+                clientThread = new Thread(client);
+                clientThread.start();
+            }
         } else if (view == cancel) {
             Intent intent = new Intent(getActivity(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

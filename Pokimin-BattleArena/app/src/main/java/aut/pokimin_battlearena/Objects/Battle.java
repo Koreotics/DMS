@@ -75,9 +75,9 @@ public class Battle {
         if(!monsterDead) {
             //slower monster uses skill
             switch (slowSkill.getType()) {
-                case "protect":setProtect(true);break;
-                case "damage":dealDamage(fasterMonster, fastSkill, slowMonster);break;
-                case "defence":increaseDefence(fasterMonster, fastSkill);break;
+                case "protect":setProtect(false);break;
+                case "damage":dealDamage(slowMonster, slowSkill, fasterMonster);break;
+                case "defence":increaseDefence(slowMonster, slowSkill);break;
             }
         }
 
@@ -94,8 +94,10 @@ public class Battle {
         //assumes if there is a protected monster that it will be the faster monster
         if(!fasterMonsterProtected) {
             //calculates damage and reduces the defending monsters health
-            int totalAttack = attackingMon.getAttack() + (int) attack.getMultiply();
-            int newHealth = defendingMon.getHealth() - (totalAttack - (int) (defendingMon.getDefence() * totalAttack));
+            double randValue = 0.8 + ((1-0.8) * new Random().nextDouble());
+            int totalAttack = (int) ((int) ((((2*attackingMon.getLevel()+10)/200) * (attack.getMultiply()/defendingMon.getDefence())
+                                                        * attackingMon.getAttack() + 2)) * randValue);
+            int newHealth = defendingMon.getHealth() - totalAttack;
             defendingMon.setHealth(newHealth);
             if (defendingMon.getHealth() <= 0) //returns true if monster is killed
                 return true;

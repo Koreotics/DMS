@@ -186,7 +186,7 @@ public class BattleActivity extends Activity implements Serializable,
         battleLogic.setServerMonster(getPlayer().getActiveMonster());
 
         battleLogic.executeBattleRound(serverSkill, clientSkill);
-        getPlayer().setActiveMonster(battleLogic.getServerMonster());
+        getPlayer().updateActiveMonster(battleLogic.getServerMonster());
 
         return battleLogic.getClientMonster();
     }
@@ -212,7 +212,7 @@ public class BattleActivity extends Activity implements Serializable,
 
     // BLUETOOTH UTILITY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    public void configBluetooth() {
+    public boolean configBluetooth() {
 
         adapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -228,11 +228,16 @@ public class BattleActivity extends Activity implements Serializable,
 
             // enable bluetooth
             if (!adapter.isEnabled()) {
-                search.setMessage("Bluetooth is disabled. Please enable to proceed.");
+                search.setMessage("Bluetooth is disabled. Please enable Bluetooth and search again.");
                 Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivity(enableBluetooth);
-            } else { search.setMessage("Bluetooth is enabled"); }
+            } else {
+                search.setMessage("Bluetooth is enabled");
+                return true;
+            }
         }
+
+        return false;
     }
 
     public void enableDiscoverable() {
@@ -243,6 +248,11 @@ public class BattleActivity extends Activity implements Serializable,
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,300);
         startActivity(discoverableIntent);
         search.getSearchButton().setVisibility(View.GONE);
+    }
+
+    public void stopConnection() {
+        bluetoothNode.stop();
+        client.stop();
     }
 
     // MISC UTILITY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
