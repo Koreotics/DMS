@@ -111,7 +111,7 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
         ContentValues values = new ContentValues();
         values.put("Name", "Tackle");
         values.put("Type", "damage");
-        values.put("multiply", 20);
+        values.put("multiply", 5);
         values.put("MaxPP", 25);
         values.put("Speed", 10);
         db.insert("Skills", null, values);
@@ -119,7 +119,7 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
         values.clear();
         values.put("Name", "Ember");
         values.put("Type", "damage");
-        values.put("multiply", 40);
+        values.put("multiply", 15);
         values.put("MaxPP", 5);
         values.put("Speed", 15);
         db.insert("Skills", null, values);
@@ -367,9 +367,9 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
 
         if(monster.getExp() >= threshold){
             monster.setExp      (monster.getExp()-threshold);
-            monster.setAttack   (monster.getAttack()+monster.getLevel()*5);     // attack adds Level x 5        - 10->15->25
+            monster.setAttack   (monster.getAttack()+monster.getLevel()*2);     // attack adds Level x 5        - 10->15->25
             monster.setDefence  (monster.getDefence()+monster.getLevel());      // defence adds Level           - 01->02->04
-            monster.setHealth   (monster.getHealth()+monster.getLevel()*5+(10));// health adds (Level x 5) + 10 - 20->35->55
+            monster.setHealth   (monster.getHealth()+monster.getLevel()*2+(10));// health adds (Level x 5) + 10 - 20->35->55
 
             monster.setLevel    (monster.getLevel()+1);
         }
