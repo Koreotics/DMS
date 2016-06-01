@@ -107,7 +107,7 @@ public class ResultFragment extends Fragment {
         DatabaseController dbc = new DatabaseController(this.getActivity());
         Monster monster = new Monster(this.getActivity(), dbc.getActiveMonsterName(dbc.getPlayerName()));
         monster.setExp(monster.getExp()+exp);
-        monster.saveMonsterCurrentInfo();}
+        dbc.updateMonsterInfo(monster);}
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // CLASS
