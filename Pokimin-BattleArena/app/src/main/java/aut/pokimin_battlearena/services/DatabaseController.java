@@ -112,7 +112,7 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
         values.put("Name", "Tackle");
         values.put("Type", "damage");
         values.put("multiply", 20);
-        values.put("MaxPP", 20);
+        values.put("MaxPP", 25);
         values.put("Speed", 10);
         db.insert("Skills", null, values);
 

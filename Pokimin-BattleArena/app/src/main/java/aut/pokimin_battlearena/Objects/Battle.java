@@ -106,10 +106,10 @@ public class Battle {
         }
 
         //reduces monster attack skill PP
-        if(attack.getName().equals(attackingMon.getSkill1().getName())){attackingMon.getSkill1().reducePP();}
-        else if(attack.getName().equals(attackingMon.getSkill2().getName())){attackingMon.getSkill2().reducePP(); }
-        else if(attack.getName().equals(attackingMon.getSkill3().getName())){attackingMon.getSkill3().reducePP(); }
-        else if(attack.getName().equals(attackingMon.getSkill4().getName())){attackingMon.getSkill4().reducePP(); }
+//        if(attack.getName().equals(attackingMon.getSkill1().getName())){attackingMon.getSkill1().reducePP();}
+//        else if(attack.getName().equals(attackingMon.getSkill2().getName())){attackingMon.getSkill2().reducePP(); }
+//        else if(attack.getName().equals(attackingMon.getSkill3().getName())){attackingMon.getSkill3().reducePP(); }
+//        else if(attack.getName().equals(attackingMon.getSkill4().getName())){attackingMon.getSkill4().reducePP(); }
 
         return false; //returns false if monster didnt die
     }
