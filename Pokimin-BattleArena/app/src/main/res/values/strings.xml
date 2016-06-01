@@ -12,6 +12,7 @@
         <item>Player</item>
         <item>Minion</item>
         <item>Battle</item>
+        <item>Training</item>
     </string-array>
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -21,4 +22,8 @@
     <string name="create_account">Create new account</string>
     <string name="player_name_hint">Player name</string>
     <string name="register_button">Register</string>
+    <string name="title_activity_training">TrainingActivity</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
 </resources>

@@ -15,11 +15,8 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="&lt;name>"
         android:id="@+id/minion_name"
-        android:layout_marginRight="59dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="59dp" />
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -28,8 +25,7 @@
         android:text="&lt;element>"
         android:id="@+id/minion_element"
         android:layout_below="@+id/minion_name"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="50dp" />
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -38,8 +34,7 @@
         android:text="&lt;level>"
         android:id="@+id/minion_level"
         android:layout_below="@+id/minion_element"
-        android:layout_alignLeft="@+id/minion_element"
-        android:layout_alignStart="@+id/minion_element" />
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -48,15 +43,6 @@
         android:text="&lt;experience>"
         android:id="@+id/minion_experience"
         android:layout_below="@+id/minion_level"
-        android:layout_alignLeft="@+id/minion_name"
-        android:layout_alignStart="@+id/minion_name" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Train"
-        android:id="@+id/minion_train_button"
-        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
     <ImageView
@@ -65,17 +51,43 @@
         android:id="@+id/imageView"
         android:src="@drawable/pokimin"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/minion_name"
-        android:layout_toLeftOf="@+id/minion_name"
-        android:layout_above="@+id/minion_train_button" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/train_distance_textview"
-        android:layout_below="@+id/minion_train_button"
+        android:text="&lt;health>"
+        android:id="@+id/minion_health"
+        android:layout_below="@+id/minion_experience"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="&lt;defense>"
+        android:id="@+id/minion_defense"
+        android:layout_below="@+id/minion_health"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="&lt;attack>"
+        android:id="@+id/minion_attack"
+        android:layout_below="@+id/minion_defense"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="&lt;speed>"
+        android:id="@+id/minion_speed"
+        android:layout_below="@+id/minion_attack"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

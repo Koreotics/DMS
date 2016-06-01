@@ -7,8 +7,10 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
+import aut.pokimin_battlearena.Objects.Monster;
 import aut.pokimin_battlearena.Objects.Skill;
 import aut.pokimin_battlearena.R;
+import aut.pokimin_battlearena.services.DatabaseController;
 import aut.pokimin_battlearena.services.LocationBasedController;
 
 /**
@@ -16,91 +18,52 @@ import aut.pokimin_battlearena.services.LocationBasedController;
  * @author Dominic Yuen  (1324837)
  * @author Gierdino Julian Santoso (15894898)
  */
-public class MinionActivity extends Activity implements OnClickListener {
+public class MinionActivity extends Activity{
 
-    LocationBasedController locationController;
-    Button toggleButton;
-    TextView distanceTextView;
+    DatabaseController db;
+
+    String minionName;
+    Monster minion;
+
     TextView nameTextView;
     TextView elementTextView;
     TextView levelTextView;
     TextView experienceTextView;
-
-
-    //-- test minion data without monster object first
-    String minionName = "Blop";
-    String minionElement = "Fire";
-    int minionAttack = 3;
-    double minionDefence = 0.1;
-    int minionSpeed = 1;
-    Skill skill1 = new Skill(this,"Tackle");
-    Skill skill2 = new Skill(this,"Ember");
-    Skill skill3 = new Skill(this,"Harden");
-    Skill skill4 = new Skill(this,"Protect");
-
-    int minionLevel = 1;
-    int minionExperience = 0;
-    //--
+    TextView healthTextView;
+    TextView defenseTextView;
+    TextView attackTextView;
+    TextView speedTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_minion);
-        locationController = new LocationBasedController(this);
-        // add button that implements onclicklistener
-        // add view
-        // add saved instance in case home button is pressed
-        toggleButton = (Button) findViewById(R.id.minion_train_button);
-        toggleButton.setOnClickListener(this);
-        locationController.setToggleButton(toggleButton);
 
-        distanceTextView    = (TextView) findViewById(R.id.train_distance_textview);
-        locationController.setLocationTextView(distanceTextView);
+        // Load monster object
+        db = new DatabaseController(this);
+        minionName = db.getActiveMonsterName(db.getPlayerName());
+        minion = new Monster(this, minionName);
 
+        // UI elements
         nameTextView        = (TextView) findViewById(R.id.minion_name);
         elementTextView     = (TextView) findViewById(R.id.minion_element);
         levelTextView       = (TextView) findViewById(R.id.minion_level);
         experienceTextView  = (TextView) findViewById(R.id.minion_experience);
+        healthTextView      = (TextView) findViewById(R.id.minion_health);
+        defenseTextView     = (TextView) findViewById(R.id.minion_defense);
+        attackTextView      = (TextView) findViewById(R.id.minion_attack);
+        speedTextView       = (TextView) findViewById(R.id.minion_speed);
 
-        if (savedInstanceState!=null
-                && savedInstanceState.containsKey(locationController.UPDATES_BUNDLE_KEY))
-            locationController.wantLocationUpdates
-                    = savedInstanceState.getBoolean(locationController.UPDATES_BUNDLE_KEY);
-        else // activity is not being reinitialized from prior start
-            locationController.wantLocationUpdates = false;
-
-        // fill in the view
-        nameTextView.setText("Name: "+ minionName);
-        elementTextView.setText("Element: "+ minionElement);
-        levelTextView.setText("Level "+minionLevel);
-        experienceTextView.setText("Exp: "+minionExperience);
+        // fill in the view with monster object
+        nameTextView.setText        (minionName);
+        elementTextView.setText     ("Element: "+minion.getElement());
+        levelTextView.setText       ("Level: "  +minion.getLevel());
+        experienceTextView.setText  ("XP: "     +minion.getExp());
+        healthTextView.setText      ("Health: " +minion.getHealth());
+        defenseTextView.setText     ("Defense: "+minion.getDefence());
+        attackTextView.setText      ("Attack: " +minion.getAttack());
+        speedTextView.setText       ("Speed: "  +minion.getSpeed());
     }
 
-    /** Called when the activity is started. */
-    @Override
-    public void onStart()
-    {  super.onStart();
-        if(locationController.isWantLocationUpdates())
-            locationController.startGPS();
-    }
 
-    /** Called when the activity is stopped. */
-    @Override
-    public void onStop()
-    {  super.onStop();
-        // stop location updates while the activity is stopped
-        locationController.stopGPS();
-    }
-
-    /** Called when activity is about to be killed to save app state */
-    @Override
-    public void onSaveInstanceState(Bundle outState)
-    {  super.onSaveInstanceState(outState);
-        outState.putBoolean(locationController.UPDATES_BUNDLE_KEY, locationController.isWantLocationUpdates());
-    }
-
-    // implementation of OnClickListener method
-    public void onClick(View view){
-        locationController.toggleLocationUpdate();
-    }
 }

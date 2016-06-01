@@ -18,6 +18,7 @@ import aut.pokimin_battlearena.activities.BattleActivity;
 import aut.pokimin_battlearena.activities.MainActivity;
 import aut.pokimin_battlearena.activities.MinionActivity;
 import aut.pokimin_battlearena.activities.PlayerActivity;
+import aut.pokimin_battlearena.activities.TrainingActivity;
 
 
 /**
@@ -88,6 +89,7 @@ public class MainMenuFragment extends ListFragment implements AdapterView.OnItem
                 intent.putExtra("fragmentID", 0);
                 intent = new Intent(activity, BattleActivity.class);
                 break;
+            case 3: intent = new Intent(activity, TrainingActivity.class); break;
         }
 
         startActivity(intent);

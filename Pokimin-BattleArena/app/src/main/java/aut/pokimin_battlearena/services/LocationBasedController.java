@@ -1,43 +1,57 @@
 package aut.pokimin_battlearena.services;
 
 import android.content.Context;
-import android.app.*;
 import android.os.*;
-import android.view.View;
 import android.location.*;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.ToggleButton;
+
+import aut.pokimin_battlearena.Objects.Monster;
 
 /**
  * @author Tristan Borja (1322097)
  * @author Dominic Yuen  (1324837)
  * @author Gierdino Julian Santoso (15894898)
  */
+/*
+    How to use:
+
+    Create a new LocationBasedController
+    Set the GUI elements (XPTextView, locationTextView, toggleButton)
+    Set the Minion object
+
+ */
 public class LocationBasedController implements LocationListener{
 
+    private DatabaseController db;
+    private Monster minion;
     private Context context;
-    private Button toggleButton; // toggles whether GPS started/stopped
-    private TextView locationTextView;
-    public boolean wantLocationUpdates;
-    public static final String UPDATES_BUNDLE_KEY
-            = "WantsLocationUpdates";
 
-    private float travelDistance;
-    private Location pastLocation;
+    private Button toggleButton; // toggles whether GPS started/stopped
+    private TextView XPTextView;
+    private TextView locationTextView;
+
+    public boolean wantLocationUpdates;
+
+    private int XP;
+    private int XPIncrease = 1; //editable XP increase for every 10 meters. This temporary value will be inputted to the database
 
     public LocationBasedController(Context context){
         this.context = context;
         wantLocationUpdates = false;
-        travelDistance = 0;
+        db = new DatabaseController(context);
     }
 
     // getters & setters
     public boolean isWantLocationUpdates(){return wantLocationUpdates;}
-    public float getTravelDistance(){return travelDistance;}
-    public void setLocationTextView(TextView textview){locationTextView = textview;}
-    public void setToggleButton(Button button){toggleButton = button;}
-
+    public void setMinion(Monster m){
+        minion = m;
+        XP = minion.getExp();}
+    public void setGUIElements(Button button, TextView xp, TextView log){
+        toggleButton = button;
+        XPTextView = xp;
+        locationTextView = log;
+    }
     public void toggleLocationUpdate(){
         if(wantLocationUpdates) {
             wantLocationUpdates = false;
@@ -56,13 +70,8 @@ public class LocationBasedController implements LocationListener{
             LocationManager locationManager = (LocationManager)
                     context.getSystemService(Context.LOCATION_SERVICE);
             String provider = LocationManager.GPS_PROVIDER;
-            locationManager.requestLocationUpdates(provider, 10000, 5, this);
-            Location lastKnownLocation
-                    = locationManager.getLastKnownLocation(provider);
-            pastLocation = lastKnownLocation;
-            if (lastKnownLocation != null)
-                locationTextView.setText(lastKnownLocation.toString());
-            toggleButton.setText("Stop training.");
+            locationManager.requestLocationUpdates(provider, 20000, 10, this);
+            toggleButton.setText("Stop training");
         }catch(SecurityException e){}
     }
 
@@ -73,7 +82,8 @@ public class LocationBasedController implements LocationListener{
             LocationManager locationManager = (LocationManager)
                     context.getSystemService(Context.LOCATION_SERVICE);
             locationManager.removeUpdates(this);
-            toggleButton.setText("Start training.");
+            toggleButton.setText("Start training");
+            locationTextView.setText("");
         }catch(SecurityException e){}
     }
 
@@ -81,10 +91,15 @@ public class LocationBasedController implements LocationListener{
     // implementation of onLocationChanged method
     public void onLocationChanged(Location location)
     {
-        travelDistance+= location.distanceTo(pastLocation); // adds the travel distance by subtracting current to previous distance
-        locationTextView.setText("Total distance: " + travelDistance);
-        // considering database update every time location changes
-        pastLocation = location;
+        // Adds XP every time the location listener is called
+        XP += XPIncrease;
+        // Updates minion object with new xp
+        minion.setExp(XP);
+        XPTextView.setText("XP: " + minion.getExp());
+        locationTextView.setText("");
+        // Updates database entry
+        db.updateMonsterInfo(minion);
+
     }
 
     // implementation of onProviderDisabled method
@@ -100,7 +115,7 @@ public class LocationBasedController implements LocationListener{
     // implementation of onStatusChanged method
     public void onStatusChanged(String provider, int status,
                                 Bundle extras)
-    {  locationTextView.setText("GPS status changed. Please try again.");
+    {  locationTextView.setText("Gathering location data..");
     }
 
 
