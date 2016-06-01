@@ -15,6 +15,8 @@ import aut.pokimin_battlearena.Objects.Skill;
  */
 public class SkillMessage extends AbstractMessage {
 
+    private static final long serialVersionUID = 1;
+
     private HashMap<String, String> serverMonster;
     private HashMap<String, String> clientMonster;
 

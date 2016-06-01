@@ -11,6 +11,8 @@ import aut.pokimin_battlearena.Objects.Player;
  */
 public class ResultMessage extends AbstractMessage {
 
+    private static final long serialVersionUID = 1;
+
     private String winner;
     private int expGain;
 

@@ -25,6 +25,7 @@ import aut.pokimin_battlearena.Objects.Skill;
 import aut.pokimin_battlearena.R;
 import aut.pokimin_battlearena.activities.BattleActivity;
 import aut.pokimin_battlearena.activities.MainActivity;
+import aut.pokimin_battlearena.services.DatabaseController;
 import aut.pokimin_battlearena.utils.MovesAdapter;
 
 /**
@@ -102,7 +103,11 @@ public class ResultFragment extends Fragment {
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     public void setWinner(String message) { winner.setText("You " + message); }
-    public void setExp(int exp)          { this.exp.setText("You have gained: " + exp + " exp..." ); }
+    public void setExp(int exp)          { this.exp.setText("You have gained: " + exp + " exp..." );
+        DatabaseController dbc = new DatabaseController(this.getActivity());
+        Monster monster = new Monster(this.getActivity(), dbc.getActiveMonsterName(dbc.getPlayerName()));
+        monster.setExp(monster.getExp()+exp);
+        monster.saveMonsterCurrentInfo();}
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // CLASS
