@@ -41,6 +41,8 @@ public class Battle {
 
     public void executeBattleRound(Skill serverSkill, Skill clientSkill){
 
+        fasterMonsterProtected = false;
+        slowerMonsterProtect = false;
         int speedServ = serverSkill.getSpeed() + getServerMonster().getSpeed();
         int speedCli = clientSkill.getSpeed() + getClientMonster().getSpeed();
 

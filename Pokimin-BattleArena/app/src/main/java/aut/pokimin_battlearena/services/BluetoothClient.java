@@ -244,7 +244,7 @@ public class BluetoothClient implements BluetoothNode {
         ObjectOutputStream output = connection.output;
 
         try {
-            String message = "client has connected";
+            String message = "Battle Start!";
             InitMessage initMessage = new InitMessage(message, null, null, activity.getPlayer().getName(),
                     activity.getPlayer().getActiveMonster().getPassableMonsterInfo());
             output.writeObject(initMessage);
