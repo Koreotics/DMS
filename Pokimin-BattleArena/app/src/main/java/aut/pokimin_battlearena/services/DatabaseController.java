@@ -367,9 +367,9 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
 
         if(monster.getExp() >= threshold){
             monster.setExp      (monster.getExp()-threshold);
-            monster.setAttack   (monster.getLevel()*5);
-            monster.setDefence  (monster.getLevel());
-            monster.setHealth   (monster.getLevel()*5+(10));
+            monster.setAttack   (monster.getAttack()+monster.getLevel()*5);
+            monster.setDefence  (monster.getDefence()+monster.getLevel());
+            monster.setHealth   (monster.getHealth()+monster.getLevel()*5+(10));
 
             monster.setLevel    (monster.getLevel()+1);
         }
