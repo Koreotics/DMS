@@ -362,6 +362,18 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
 
     public void updateMonsterInfo(Monster monster){
 
+        // Level up automatically if xp reaches a certain threshold
+        int threshold = 100;
+
+        if(monster.getExp() >= threshold){
+            monster.setExp      (monster.getExp()-threshold);
+            monster.setAttack   (monster.getLevel()*5);
+            monster.setDefence  (monster.getLevel());
+            monster.setHealth   (monster.getLevel()*5+(10));
+
+            monster.setLevel    (monster.getLevel()+1);
+        }
+
         // access database
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -373,7 +385,6 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
         values.put("Defence", monster.getDefence());
         values.put("Attack", monster.getAttack());
         values.put("Speed", monster.getSpeed());
-
 
         db.update("Party", values, "Name=?", new String[]{monster.getName()});
 
