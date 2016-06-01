@@ -363,7 +363,7 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
     public void updateMonsterInfo(Monster monster){
 
         // Level up automatically if xp reaches a certain threshold
-        int threshold = 20;
+        int threshold = 50;
 
         if(monster.getExp() >= threshold){
             monster.setExp      (monster.getExp()-threshold);

@@ -57,7 +57,6 @@ public class BattleActivity extends Activity implements Serializable,
     IntentFilter intentFilter;
     BluetoothAdapter adapter;
 
-    // Tristan added this
     BluetoothClient client;
     BluetoothServer server;
 
