@@ -62,4 +62,7 @@ public class MovesAdapter extends BaseAdapter {
 
         return view;
     }
+
+
+
 }

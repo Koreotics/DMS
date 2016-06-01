@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import aut.pokimin_battlearena.Objects.Battle;
 import aut.pokimin_battlearena.Objects.Message.BattleMessage;
 import aut.pokimin_battlearena.Objects.Message.InitMessage;
 import aut.pokimin_battlearena.Objects.Message.ResultMessage;
@@ -34,6 +35,7 @@ import aut.pokimin_battlearena.Objects.Skill;
 import aut.pokimin_battlearena.R;
 import aut.pokimin_battlearena.activities.BattleActivity;
 import aut.pokimin_battlearena.activities.MainActivity;
+import aut.pokimin_battlearena.fragments.BattleFragment;
 import aut.pokimin_battlearena.fragments.ResultFragment;
 
 /**
@@ -232,11 +234,22 @@ public class BluetoothServer implements BluetoothNode  {
 
     public void showResultsPage(ResultMessage object) {
 
+
         final ResultMessage message = object;
+
 
 
         // set text on result fragment
         final ResultFragment fragment= battleActivity.getResultFragment();
+
+
+        // transact to result fragment
+        FragmentManager manager = battleActivity.getFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.battle_fragment, fragment);
+        transaction.commit();
+
+
         handler.post(new Runnable() {
             public void run() {
                 fragment.setExp(message.getExpGain());
@@ -248,13 +261,6 @@ public class BluetoothServer implements BluetoothNode  {
         Monster minion = battleActivity.getPlayer().getActiveMonster();
         minion.setExp(minion.getExp() + message.getExpGain());
 
-        // transact to result fragment
-        FragmentManager manager = battleActivity.getFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.battle_fragment, fragment);
-        transaction.commit();
-
-        stopRequest = true;
 
     }
 
@@ -321,12 +327,16 @@ public class BluetoothServer implements BluetoothNode  {
                                     battleActivity.setMaxOpponentHealth(clientMonster);
                                     battleActivity.setBattleOpponentHealth(clientMonster);
 
+                                    BattleFragment.maxOpponentHealth = clientMonster.getHealth();
+
                                 }
 
                                 if (serverPlayer != null) {
                                     battleActivity.setBattlePlayerName(serverPlayer.getName() + ": " + serverPlayer.getActiveMonster().getName());
                                     battleActivity.setBattlePlayerHealth(serverPlayer.getActiveMonster());
+                                    BattleFragment.maxPlayerHealth = serverPlayer.getActiveMonster().getHealth();
                                 }
+                                battleActivity.updateHealthValues();
                             }
                         });
 
@@ -342,9 +352,6 @@ public class BluetoothServer implements BluetoothNode  {
                     }
 
 
-
-
-                   // BluetoothServer.hasAttacked = false;
                 }
             } catch (IOException e) {
                 handler.post(new Runnable() {
@@ -438,12 +445,14 @@ public class BluetoothServer implements BluetoothNode  {
                 serverSkill = new Skill(skillMessage1.getServerSkill());
                 clientMonster = new Monster(this.context, skillMessage2.getClientMonster());
                 clientSkill = new Skill(skillMessage2.getClientSkill());
+
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
                         battleActivity.setBattleResponseMessage(skillMessage2.getMessage());
                     }
                 });
+
             }
 
             Player player = battleActivity.getPlayer();
@@ -459,29 +468,38 @@ public class BluetoothServer implements BluetoothNode  {
             // change health of monsters
             if (clientMonster != null) {
                 battleActivity.setBattleOpponentHealth(clientMonster);
+
+
                 //checks win conditions and sends results messages
-                if(clientMonster.getHealth() <= 0){
-                    sendResultsMessage("You are the Loser!!", "Loser.", clientMonster.getLevel()+50+10);
-                    showResultsPage(new ResultMessage("You Win!", "Winner", 0));
+
+                if(clientMonster.getHealth() <= 0){ // server wins
+                    sendResultsMessage("You are the Loser!!", "have been defeated", player.getActiveMonster().getLevel()+10);
+                    showResultsPage(new ResultMessage("You Win!", "are victorious", clientMonster.getLevel()*5+10));
+
                 }
             }
             if (player.getActiveMonster() != null) {
                 battleActivity.setBattlePlayerHealth(player.getActiveMonster());
+
                 //checks win conditions and sends results messages
-                if(serverMonster.getHealth() <= 0){
-                    sendResultsMessage("You are the winner!!", "You", player.getActiveMonster().getLevel()+50+10);
-                    showResultsPage(new ResultMessage("You Lose.", "Loser", 0));
+
+                if(serverMonster.getHealth() <= 0){ // client wins
+                    sendResultsMessage("You are the winner!!", "are victorious", clientMonster.getLevel()*5+10);
+                    showResultsPage(new ResultMessage("You Lose.", "have been defeated", player.getActiveMonster().getLevel()+10));
                 }
             }
+            //updates health values under progress bars
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    battleActivity.updateHealthValues();                }
+            });
 
 
             BluetoothServer.hasAttacked = false;
 
 
-            // put message on server display
-//            if (battleActivity != null)
-//                battleActivity.showReceivedMessage("RECEIVED: "+message);
-            // pass message to all clients
+
 
 
         }

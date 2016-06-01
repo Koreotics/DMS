@@ -170,7 +170,7 @@ public class BattleActivity extends Activity implements Serializable,
     public void setBattlePlayerHealth(Monster monster)   { battle.setPlayerHealth(monster); }
     public void setBattleOpponentHealth(Monster monster) { battle.setOpponentHealth(monster); }
     public void setMaxOpponentHealth(Monster monster){ battle.setMaxOpponentHealth(monster);}
-
+    public void updateHealthValues()                        {battle.updateHealth();}
 
     public void showServerButton() { search.showServerButton(); }
     public void showSearchButton() { search.showSearchButton();}
@@ -212,7 +212,7 @@ public class BattleActivity extends Activity implements Serializable,
 
     // BLUETOOTH UTILITY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    public void configBluetooth() {
+    public boolean configBluetooth() {
 
         adapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -228,11 +228,16 @@ public class BattleActivity extends Activity implements Serializable,
 
             // enable bluetooth
             if (!adapter.isEnabled()) {
-                search.setMessage("Bluetooth is disabled. Please enable to proceed.");
+                search.setMessage("Bluetooth is disabled. Please enable Bluetooth and search again.");
                 Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivity(enableBluetooth);
-            } else { search.setMessage("Bluetooth is enabled"); }
+            } else {
+                search.setMessage("Bluetooth is enabled");
+                return true;
+            }
         }
+
+        return false;
     }
 
     public void enableDiscoverable() {
@@ -243,6 +248,11 @@ public class BattleActivity extends Activity implements Serializable,
         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION,300);
         startActivity(discoverableIntent);
         search.getSearchButton().setVisibility(View.GONE);
+    }
+
+    public void stopConnection() {
+        bluetoothNode.stop();
+        client.stop();
     }
 
     // MISC UTILITY ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

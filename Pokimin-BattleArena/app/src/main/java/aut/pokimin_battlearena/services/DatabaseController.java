@@ -111,7 +111,7 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
         ContentValues values = new ContentValues();
         values.put("Name", "Tackle");
         values.put("Type", "damage");
-        values.put("multiply", 10);
+        values.put("multiply", 20);
         values.put("MaxPP", 20);
         values.put("Speed", 10);
         db.insert("Skills", null, values);
@@ -119,7 +119,7 @@ public class DatabaseController extends SQLiteOpenHelper implements Serializable
         values.clear();
         values.put("Name", "Ember");
         values.put("Type", "damage");
-        values.put("multiply", 20);
+        values.put("multiply", 40);
         values.put("MaxPP", 5);
         values.put("Speed", 15);
         db.insert("Skills", null, values);

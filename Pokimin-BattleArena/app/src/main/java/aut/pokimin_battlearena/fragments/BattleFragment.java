@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,11 +48,18 @@ public class BattleFragment extends Fragment {
     TextView message;
     TextView opponent;
     TextView player;
+    TextView playerHealthValue;
+    TextView opponentHealthValue;
+
 
     GridView moveSet;
 
     ProgressBar opponentHealth;
     ProgressBar playerHealth;
+
+    public static int maxPlayerHealth = 0;
+    public static int maxOpponentHealth = 0;
+
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // FRAGMENT
@@ -60,6 +68,8 @@ public class BattleFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup,
                              Bundle savedInstanceState) {
+
+
 
         battleActivity = (BattleActivity) getActivity();
         bluetoothNode = battleActivity.getBluetoothNode();
@@ -73,6 +83,8 @@ public class BattleFragment extends Fragment {
         moveSet  = (GridView) view.findViewById(R.id.move_sets);
         opponentHealth = (ProgressBar) view.findViewById(R.id.opponent_hp);
         playerHealth   = (ProgressBar) view.findViewById(R.id.player_hp);
+        playerHealthValue = (TextView) view.findViewById(R.id.player_hp_text);
+        opponentHealthValue = (TextView) view.findViewById(R.id.opponent_hp_text);
 
         playerHealth.setMax(battleActivity.getPlayer().getActiveMonster().getHealth());
 
@@ -101,9 +113,15 @@ public class BattleFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Skill selectedMove = (Skill) adapter.getItem(position);
                 activity.sendActiveSkill(selectedMove);
+                selectedMove.reducePP();
+                adapter.notifyDataSetChanged();
+                activity.setBattleResponseMessage("Waiting for Opponent to make his move...");
             }
         });
 
+
+        //starts update health thread
+        updateHealth();
 
         return view;
     }
@@ -135,8 +153,12 @@ public class BattleFragment extends Fragment {
     public void setOpponentHealth(Monster monster) { this.opponentHealth.setProgress(monster.getHealth()); }
     public void setPlayerHealth(Monster monster)   { this.playerHealth.setProgress(monster.getHealth()); }
     public void setMaxOpponentHealth(Monster monster){ this.opponentHealth.setMax(monster.getHealth());}
+    public void setOpponentHealthValue(String value) { this.opponentHealthValue.setText(value); }
+    public void setPlayerHealthValue (String value)   { this.playerHealthValue.setText(value); }
 
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    public ProgressBar getOpponentHealth() {return opponentHealth;}
+    public ProgressBar getPlayerHealth() {return playerHealth;}
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     // UTILITY
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -157,6 +179,12 @@ public class BattleFragment extends Fragment {
             startActivity(intent);
         }
 
+    }
+
+    public void updateHealth(){
+
+        setOpponentHealthValue( getOpponentHealth().getProgress()+ "/" + maxOpponentHealth);
+        setPlayerHealthValue(getPlayerHealth().getProgress() + "/" + maxPlayerHealth);
     }
     
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
