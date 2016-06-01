@@ -20,23 +20,21 @@ import aut.pokimin_battlearena.Objects.Monster;
     How to use:
 
     Create a new LocationBasedController
-    Set the GUI elements (XPTextView, locationTextView, toggleButton)
-    Set the Minion object
+    Set the GUI elements (XPTextView, locationTextView, nameandlevel, toggleButton)
 
  */
 public class LocationBasedController implements LocationListener{
 
     private DatabaseController db;
-    private Monster minion;
     private Context context;
 
     private Button toggleButton; // toggles whether GPS started/stopped
     private TextView XPTextView;
+    private TextView nameAndLevelTextView;
     private TextView locationTextView;
 
     public boolean wantLocationUpdates;
 
-    private int XP;
     private int XPIncrease = 1; //editable XP increase for every 10 meters. This temporary value will be inputted to the database
 
 
@@ -51,13 +49,11 @@ public class LocationBasedController implements LocationListener{
     // getters & setters
     public boolean isWantLocationUpdates(){return wantLocationUpdates;}
 
-    public void setMinion(Monster m){
-        minion = m;
-        XP = minion.getExp();}
-    public void setGUIElements(Button button, TextView xp, TextView log){
+    public void setGUIElements(Button button, TextView xp, TextView log, TextView nl){
         toggleButton = button;
         XPTextView = xp;
         locationTextView = log;
+        nameAndLevelTextView = nl;
     }
 
     public void toggleLocationUpdate(){
@@ -103,16 +99,16 @@ public class LocationBasedController implements LocationListener{
     // implementation of onLocationChanged method
     public void onLocationChanged(Location location)
     {
-
-        // Adds XP every time the location listener is called
-        XP += XPIncrease;
-        // Updates minion object with new xp
-        minion.setExp(XP);
+        // Load most current stat from database
+        Monster minion = new Monster(context, db.getActiveMonsterName(db.getPlayerName()));
+        // Adds XP every time the location listener is called & updates minion object with new xp
+        minion.setExp(minion.getExp() + XPIncrease);
+        // Updates GUI
         XPTextView.setText("XP: " + minion.getExp());
         locationTextView.setText("");
+        nameAndLevelTextView.setText(minion.getName()+" Level "+minion.getLevel());
         // Updates database entry
         db.updateMonsterInfo(minion);
-
 
     }
 

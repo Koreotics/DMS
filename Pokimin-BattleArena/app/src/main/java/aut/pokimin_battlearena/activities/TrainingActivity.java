@@ -50,8 +50,7 @@ public class TrainingActivity extends Activity
 
         // Location based code & assignment
         locationController = new LocationBasedController(this);
-        locationController.setGUIElements(toggleButton,minionXPText,locationText);
-        locationController.setMinion(minion);
+        locationController.setGUIElements(toggleButton,minionXPText,locationText,activeMinionText);
 
 
         // Load saved instance
