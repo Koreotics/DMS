@@ -1,11 +1,14 @@
 package aut.pokimin_battlearena.services;
 
 import android.app.Activity;
+import android.widget.GridView;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.UUID;
 
 import aut.pokimin_battlearena.Objects.Skill;
+import aut.pokimin_battlearena.utils.MovesAdapter;
 
 /**
  * @author Tristan Borja (1322097)
@@ -35,7 +38,7 @@ public interface BluetoothNode extends Runnable, Serializable {
     // registers or unregisters (if null) a ChatActivity for display
     public void registerActivity(Activity activity);
 
-    public void sendActiveSkill(Skill skill);
+    public void sendActiveSkill(Skill skill, int position, ArrayList<Skill> skills, GridView view, MovesAdapter adapter);
 
     public void sendPlayerInfo();
 }

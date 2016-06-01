@@ -12,9 +12,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import aut.pokimin_battlearena.Objects.Battle;
 import aut.pokimin_battlearena.Objects.Monster;
@@ -28,6 +30,7 @@ import aut.pokimin_battlearena.services.BluetoothClient;
 import aut.pokimin_battlearena.services.BluetoothNode;
 import aut.pokimin_battlearena.services.BluetoothServer;
 import aut.pokimin_battlearena.services.DatabaseController;
+import aut.pokimin_battlearena.utils.MovesAdapter;
 
 /**
  * @author Tristan Borja (1322097)
@@ -205,7 +208,9 @@ public class BattleActivity extends Activity implements Serializable,
 
     // SENDING CLIENT MESSAGES ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    public void sendActiveSkill(Skill skill) { this.bluetoothNode.sendActiveSkill(skill); }
+    public void sendActiveSkill(Skill skill, int position, ArrayList<Skill> skills, GridView view,
+                                MovesAdapter adapter) {
+        this.bluetoothNode.sendActiveSkill(skill, position,skills, view, adapter); }
     public void sendPlayerInfo()             { this.bluetoothNode.sendPlayerInfo(); }
 
     public void registerBluetoothNode(BluetoothNode node) { this.bluetoothNode = node; }

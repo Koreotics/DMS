@@ -15,6 +15,7 @@ import android.content.IntentFilter;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.GridView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -37,6 +38,7 @@ import aut.pokimin_battlearena.R;
 import aut.pokimin_battlearena.activities.BattleActivity;
 import aut.pokimin_battlearena.activities.MainActivity;
 import aut.pokimin_battlearena.fragments.ResultFragment;
+import aut.pokimin_battlearena.utils.MovesAdapter;
 
 
 /**
@@ -253,11 +255,17 @@ public class BluetoothClient implements BluetoothNode {
         }
     }
 
-    public void sendActiveSkill(Skill skill) {
+    public void sendActiveSkill(Skill skill, int position, ArrayList<Skill> skills, GridView view, MovesAdapter adapter) {
         ObjectOutputStream output = connection.output;
 
         try {
             if(BluetoothClient.haveAttacked == false) {
+                // updating gridview
+                skill.reducePP();
+                skills.set(position, skill);
+                adapter.notifyDataSetChanged();
+                view.setAdapter(adapter);
+
                 Player player = activity.getPlayer();
                 Monster monster = player.getActiveMonster();
                 String message = player.getName() + "'s " +
